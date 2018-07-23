@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org">
+	
+<body>
+<aside class="aw-layout-sidebar  js-sidebar" th:fragment="layout-sidebar">
+	<div class="aw-layout-sidebar__content">
+
+    	<nav class="aw-menu  js-menu">
+      		<ul class="aw-menu__list">
+
+        		<li class="aw-menu__item" brewer:menu="@{/}">
+          			<a th:href="@{/}"><i class="fa  fa-fw  fa-home"></i><span>Menu Principal</span></a>
+        		</li>
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-calendar"></i><span>Agenda</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+          			     <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/agendas.+}">
+			            	<a th:href="@{/agendas/novo}">Agendamento</a>
+			            </li>
+			             <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/agendas}">
+			            	<a th:href="@{/agendas}">Pesquisa de agendamento</a>
+			            </li>
+          			</ul>
+        		</li>	
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-credit-card"></i><span>Orçamentos</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/vendas.+}">
+			            	<a th:href="@{/vendas/nova}">Cadastro de orçamento</a>
+			            </li>			            
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/vendas}">
+			            	<a th:href="@{/vendas}">Pesquisa de orçamentos</a>
+			            </li>
+			        </ul>
+			    </li>
+
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-truck"></i><span>Estoque</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">			            
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/produtos.+}">
+			            	<a th:href="@{/produtos/novo}">Entrada de estoque</a>
+			            </li>
+			             <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/produtos}">
+			            	<a th:href="@{/produtos}">Pesquisa de estoque</a>
+			            </li>
+          			</ul>
+        		</li>
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-database"></i><span>Serviços</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+          			<li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/servicos.+}">
+			            	<a th:href="@{/servicos/novo}">Cadastro de serviço</a>
+			            </li>
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/servicos}">
+			            	<a th:href="@{/servicos}">Pesquisa de serviço</a>
+			            </li>			           
+          			</ul>
+        		</li>
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-users"></i><span>Pacientes</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+          			     <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/clientes.+}">
+			            	<a th:href="@{/clientes/novo}">Cadastro de paciente</a>
+			            </li>
+			             <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/clientes}">
+			            	<a th:href="@{/clientes}">Pesquisa de paciente</a>
+			            </li>
+			             <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/anamineses.*}">
+			            	<a th:href="@{/anamineses}">Pesquisa de Anamineses</a>
+			            </li>
+          			</ul>
+        		</li>	
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-database"></i><span>Cadastros</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+          				<li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/categorias.*}">
+			            	<a th:href="@{/categorias}">Categoria</a>
+			            </li>
+          			    <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/cidades.*}">
+			            	<a th:href="@{/cidades}">Cidades</a>
+			           </li>			           
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/usuarios.*}">
+			            	<a th:href="@{/usuarios}">Usuários</a>
+			            </li>
+          			</ul>
+        		</li>	
+        		
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-file-pdf-o"></i><span>Relatórios</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/relatorios.*}">
+			            	<a th:href="@{/relatorios/vendasEmitidas}">Orçamentos emitidos</a>
+			            </li>
+          			</ul>
+        		</li>
+      		</ul>
+    	</nav>
+	</div>
+</aside>
+</body>
+</html>

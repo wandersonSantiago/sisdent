@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:brewer="http://brewer.algaworks.com"
+	layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+	<title>Cadastro de Anaminese</title>
+</head>
+
+<section layout:fragment="conteudo">
+
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1 th:text="| Anaminese do paciente ${cliente.nome}"></h1>
+				</div>			
+				<div class="col-sm-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/clientes}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Pesquisa</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<form method="POST" th:object="${anaminese}" class="form-vertical  js-form-loading" 
+				th:action=" @{/anamineses/novo/{codigo}(codigo=${cliente.codigo})}">
+			<brewer:message/>			
+			<div class="row">
+				<div class="form-group  col-sm-2  bw-required" brewer:classforerror="fumante">
+					<label for="nome" class="control-label">Fumante:</label>
+					<input type="checkbox"	th:field="*{fumante}"> 
+				</div>
+				<div class="form-group  col-sm-2  bw-required" brewer:classforerror="praticaExercicio">
+					<label for="nome" class="control-label">Pratica Exercicio:</label>
+					<input type="checkbox"	th:field="*{praticaExercicio}"> 
+				</div>
+			</div>
+			<div class="row">				
+				<div class="form-group  col-sm-1  bw-required" brewer:classforerror="doencaHereditaria">
+					<label for="nome" class="control-label">Doença Hereditaria:</label><br>
+					<input type="checkbox"	th:field="*{doencaHereditaria}"> 
+				</div>
+				<div class="form-group  col-sm-11  bw-required" brewer:classforerror="descricaoDoenca">
+					<label for="nome" class="control-label">Descrição</label>
+					<textarea id="descricaoDoenca" rows="2" class="form-control" th:field="*{descricaoDoenca}"></textarea>
+				</div>
+			</div>
+			<div class="row">				
+				<div class="form-group  col-sm-1  bw-required" brewer:classforerror="operacaoRecente">
+					<label for="nome" class="control-label">Operação Recente:</label><br>
+					<input type="checkbox"	th:field="*{operacaoRecente}"> 
+				</div>
+				<div class="form-group  col-sm-11  bw-required" brewer:classforerror="descricaoOperacaoRecente">
+					<label for="nome" class="control-label">Descrição</label>
+					<textarea id="descricaoOperacaoRecente" rows="2" class="form-control" th:field="*{descricaoOperacaoRecente}"></textarea>
+				</div>
+			</div>
+			<div class="row">				
+				<div class="form-group  col-sm-1  bw-required" brewer:classforerror="medicacaoContinua">
+					<label for="nome" class="control-label">Medicação Continua:</label><br>
+					<input type="checkbox"	th:field="*{medicacaoContinua}"> 
+				</div>
+				<div class="form-group  col-sm-11  bw-required" brewer:classforerror="descricaoMedicacaoContinua">
+					<label for="nome" class="control-label">Descrição</label>
+					<textarea id="descricaoMedicacaoContinua" rows="2" class="form-control" th:field="*{descricaoMedicacaoContinua}"></textarea>
+				</div>
+			</div>
+			<div class="row">				
+				<div class="form-group  col-sm-1 bw-required" brewer:classforerror="alergia">
+					<label for="nome" class="control-label">Alergia:</label><br>
+					<input type="checkbox"	th:field="*{alergia}"> 
+				</div>
+				<div class="form-group  col-sm-11  bw-required" brewer:classforerror="descricaoAlergia">
+					<label for="nome" class="control-label">Descrição</label>
+					<textarea id="descricaoAlergia" rows="2" class="form-control" th:field="*{descricaoAlergia}"></textarea>
+				</div>
+			</div>
+			<div class="row">				
+				<div class="form-group  col-sm-1  bw-required" brewer:classforerror="dst">
+					<label for="nome" class="control-label">DST:</label><br>
+					<input type="checkbox"	th:field="*{dst}"> 
+				</div>
+				<div class="form-group  col-sm-11  bw-required" brewer:classforerror="descricaoDst">
+					<label for="nome" class="control-label">Descrição</label>
+					<textarea id="descricaoDst" rows="2" class="form-control" th:field="*{descricaoDst}"></textarea>
+				</div>
+			</div>
+			<div class="row">				
+				<div class="form-group  col-sm-12  bw-required" brewer:classforerror="observacao">
+					<label for="nome" class="control-label">Observação</label>
+					<textarea id="observacao" rows="4" class="form-control" th:field="*{observacao}"></textarea>
+				</div>
+			</div>
+						
+			<button type="submit" class="btn  btn-primary">Salvar</button>				
+		</form>
+	</div>
+</section>
+
+<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/cliente.mascara-cpf-cnpj.js}"></script>
+	<script th:src="@{/javascripts/cliente.combo-estado-cidade.js}"></script>
+</th:block>
+
+</html>

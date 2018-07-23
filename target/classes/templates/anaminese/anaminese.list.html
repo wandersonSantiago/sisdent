@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}"
+	xmlns:brewer="http://brewer.algaworks.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data">
+	
+<head>
+	<title>Pesquisa de anamineses</title>
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de anamineses</h1>
+				</div>
+				
+				<div class="col-xs-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/clientes}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Pesquisa paciente</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${anamineseFilter}">
+			<div class="row">
+				<div class="form-group  col-sm-8">
+					<label class="control-label" for="nome">Nome Paciente</label>
+					<input type="text" class="form-control" id="nomeCliente" autofocus="autofocus" th:field="*{nomeCliente}"/>
+				</div>
+				
+				<div class="form-group  col-sm-4">
+					<label for="cpfOuCnpj" class="control-label">CPF ou CNPJ</label>
+					<input type="text" class="form-control" id="cpfOuCnpjCliente" th:field="*{cpfOuCnpjCliente}"/>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+				<thead>
+					<tr>
+						<th class="text-center">
+							<brewer:order page="${pagina}" field="cliente" text="Cliente"/>
+						</th>	
+						<th class="text-center">Alérgica</th>	
+						<th class="text-center">fumante</th>
+						<th class="text-center">Fratica Exercicio</th>	
+						<th class="text-center">Doença Hereditaria</th>	
+						<th class="text-center">Operação Recente</th>	
+						<th class="text-center">Medicação Continua</th>											
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:each="anaminese : ${pagina.conteudo}">
+						<td class="text-center" th:text="${anaminese.cliente.nome}">Nome Paciente</td>		
+						<td class="text-center" th:unless="${anaminese.alergia == true}" th:text="|Não|">Alergia</td>	
+						<td class="text-center" th:unless="${anaminese.alergia == false}" th:text="|Sim|">Alergia</td>
+						<td class="text-center" th:unless="${anaminese.fumante == true}" th:text="|Não|">fumante</td>	
+						<td class="text-center" th:unless="${anaminese.fumante == false}" th:text="|Sim|">fumante</td>
+						<td class="text-center" th:unless="${anaminese.praticaExercicio == true}" th:text="|Não|">praticaExercicio</td>	
+						<td class="text-center" th:unless="${anaminese.praticaExercicio == false}" th:text="|Sim|">praticaExercicio</td>	
+						<td class="text-center" th:unless="${anaminese.doencaHereditaria == true}" th:text="|Não|">doencaHereditaria</td>	
+						<td class="text-center" th:unless="${anaminese.doencaHereditaria == false}" th:text="|Sim|">doencaHereditaria</td>
+						<td class="text-center" th:unless="${anaminese.operacaoRecente == true}" th:text="|Não|">operacaoRecente</td>	
+						<td class="text-center" th:unless="${anaminese.operacaoRecente == false}" th:text="|Sim|">operacaoRecente</td>
+						<td class="text-center" th:unless="${anaminese.medicacaoContinua == true}" th:text="|Não|">medicacaoContinua</td>	
+						<td class="text-center" th:unless="${anaminese.medicacaoContinua == false}" th:text="|Sim|">medicacaoContinua</td>		
+					</tr>
+					<tr th:if="${pagina.vazia}">
+						<td colspan="5">Nenhum anaminese encontrado</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<brewer:pagination page="${pagina}"/>
+		
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}"
+	xmlns:brewer="http://brewer.algaworks.com">
+	
+<head>
+	<title>Pesquisa de Servico</title>
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de Servico</h1>
+				</div>
+				
+				<div class="col-xs-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/servicos/novo}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Novo Servico</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${servicoFilter}">
+			<div class="row">
+				<div class="form-group  col-sm-3">
+					<label class="control-label" for="sku">Codigo</label>
+					<input type="text" class="form-control" id="codigoBarras" autofocus="autofocus" th:field="*{codigoBarras}"/>
+				</div>
+				
+				<div class="form-group  col-sm-9" >
+					<label class="control-label" for="nome">Nome</label>
+					<input type="text" class="form-control" id="nome" th:field="*{nome}"/>
+				</div>
+			</div>
+			
+			 <div class="row">
+				<div class="form-group  col-sm-6">
+					<label class="control-label" for="categoria">Categoria</label>
+					<select id="categoria" class="form-control" th:field="*{categoria}">
+	                    <option value="">Todas as categorias</option>
+	                    <option th:each="categoria : ${categorias}" th:text="${categoria.nome}" th:value="${categoria.codigo}"></option>
+	                </select>
+				</div>
+				<div class="col-sm-6  form-group">
+					<label for="valorDe">Valor unitário</label>
+					<div class="form-inline">
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorDe" th:field="*{valorDe}"/>
+						<label for="valorAte" class="aw-form-label-between">até</label>
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorAte" th:field="*{valorAte}"/>
+					</div>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+				<thead>
+					<tr>
+						<th >
+							<brewer:order page="${pagina}" field="codigoBarras" text="CODIGO"/>
+						</th>
+						<th >
+							<brewer:order page="${pagina}" field="nome" text="Nome"/>
+						</th>
+						<th>Valor</th>
+						<th></th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:each="servico : ${pagina.conteudo}">
+					
+						<td th:text="${servico.codigoBarras}">AA1234</td>
+						<td th:text="${servico.nome}">Servico Stella</td>
+						<td th:text="|R$ ${{servico.valor}}|">R$ 8.00</td>
+						<td >
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
+									th:href="@{/servicos/{codigo}(codigo=${servico.codigo})}"> 
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>
+							<a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir" href="#" 
+									data:url="@{/servicos/{codigo}(codigo=${servico.codigo})}"
+									data:objeto="${servico.nome}">
+								<i class="glyphicon glyphicon-remove"></i>
+							</a>
+						</td>
+					</tr>
+					<tr th:if="${pagina.vazia}">
+						<td colspan="7">Nenhuma servico encontrada</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<brewer:pagination page="${pagina}"/>
+		
+	</div>
+
+</section>
+</body>
+</html>

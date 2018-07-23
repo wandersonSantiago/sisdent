@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}"
+	xmlns:brewer="http://brewer.algaworks.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data">
+
+<head>
+	<title>Agendamento</title>
+	
+	<link rel="stylesheet" th:href="@{/stylesheets/vendors/easy-autocomplete.min.css}"/>
+	<link rel="stylesheet" th:href="@{/stylesheets/vendors/easy-autocomplete.themes.min.css}"/>
+</head>
+
+<section layout:fragment="conteudo">
+
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1 th:if="${agenda.nova}" >Agendamento</h1>
+					<h1 th:unless="${agenda.nova}" >Edição da agenda do paciente [[${agenda.cliente.nome}]]</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="POST"
+		th:action="${agenda.nova} ? @{/agendas/novo} : @{/agendas/{codigo}(codigo=${agenda.codigo})}"
+		th:object="${agenda}" class="js-formulario-principal">
+			<brewer:message/>
+			<div class="row" th:unless="${agenda.nova}">
+				<div class="form-group  col-sm-4">
+					<label for="status" class="control-label">Status</label>
+					<select id="status" class="form-control" th:field="*{status}"  th:disabled="${agenda.disable}">
+	                    <option value="">Todos os status</option>
+	                    <option th:each="status : ${status}" th:value="${status}" th:text="${status.descricao}"></option>
+	                </select>
+				</div>	
+			</div>
+			<div class="row">
+				<div class="form-group  col-sm-4  bw-required" brewer:classforerror="cliente.codigo">
+					<label class="control-label" for="nomeCliente">Paciente</label>
+					<div class="input-group">
+				      <input id="nomeCliente" type="text" readonly="readonly" class="form-control" th:field="*{cliente.nome}" 
+				      	placeholder="Clique na lupa para pesquisar o cliente"/>
+				      <input id="codigoCliente" type="hidden" th:field="*{cliente}"/>
+				      <span class="input-group-btn">
+				        <button class="btn  btn-default  js-tooltip" type="button" title="Pesquisa avançada"
+				        		data-toggle="modal" data-target="#pesquisaRapidaClientes" th:disabled="${agenda.disable}">
+				        	<i class="glyphicon  glyphicon-search"></i>
+				        </button>
+				      </span>
+				    </div>
+				</div>
+				
+				<div class="form-group  col-sm-4">
+					<label class="control-label" for="valorFrete">Data:</label>
+					<div class="input-group">
+	      				<div class="input-group-addon"><i class="fa  fa-calendar"></i></div> 
+						<input type="text"  class="form-control    js-date" id="data"  th:disabled="${agenda.disable}"
+							th:field="*{data}" />
+					</div>
+				</div>
+				
+				<div class="form-group  col-sm-4">
+					<label class="control-label" for="valorDesconto">Horario:</label>
+					<div class="input-group">
+	      				<div class="input-group-addon"><i class="fa  fa-calendar"></i></div> 
+						<input type="time"  class="form-control" id="horario" 	th:field="*{horario}" th:disabled="${agenda.disable}" />
+					</div>
+				</div>
+			</div>
+			
+			
+			
+			<div class="tab-content">									
+				<div class="row">					
+						<div class="form-group  col-sm-12">
+						<label>Observação:</label>
+							<textarea class="form-control" id="dataEntrega" rows="5" 
+								placeholder="Observações" th:field="*{observacao}" th:disabled="${agenda.disable}"></textarea>
+						</div>
+				</div>
+			</div>
+			
+			<div class="row" style="clear: both" >
+				<div class="col-lg-12">
+					<div class="btn-group">
+					  <button type="submit" class="btn  btn-primary  js-submit-btn" data:acao="salvar" th:disabled="${agenda.disable}">Salvar</button>
+					  <button type="button" class="btn  btn-primary  dropdown-toggle" data-toggle="dropdown" th:disabled="${agenda.disable}">
+					    <span class="caret"></span>
+					  </button>					  
+					  <ul class="dropdown-menu">
+					    <li><a href="#" class="js-submit-btn" data:acao="emitir" th:disabled="${agenda.disable}">Salvar e imprimir</a></li>
+					  </ul>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<th:block th:replace="cliente/PesquisaRapidaClientes :: pesquisaRapidaClientes"></th:block>
+</section>
+
+<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/vendors/jquery.easy-autocomplete.min.js}"></script>
+	<script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
+	<script th:src="@{/javascripts/cliente.pesquisa-rapida.js}"></script>	
+</th:block>
+
+</html>
