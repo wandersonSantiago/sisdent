@@ -5,9 +5,12 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -38,6 +41,8 @@ import com.sisdent.repository.Vendas;
 import com.sisdent.repository.filter.VendaFilter;
 import com.sisdent.security.UsuarioSistema;
 import com.sisdent.service.CadastroVendaService;
+import com.sisdent.service.RelatorioService;
+import com.sisdent.service.RelatorioUtil;
 import com.sisdent.session.TabelasItensSession;
 
 @Controller
@@ -54,13 +59,13 @@ public class VendasController {
 	private CadastroVendaService cadastroVendaService;
 	
 	@Autowired
-	private VendaValidator vendaValidator;
+	private RelatorioUtil relatorioUtil;
 	
 	@Autowired
 	private Vendas vendas;
 	
 	@Autowired
-	private Mailer mailer;
+	private RelatorioService relatorioService;
 	
 	@GetMapping("/nova")
 	public ModelAndView nova(Venda venda) {
@@ -102,6 +107,23 @@ public class VendasController {
 		cadastroVendaService.emitir(venda);
 		attributes.addFlashAttribute("mensagem", "Orçamento emitida com sucesso");
 		return new ModelAndView("redirect:/vendas/nova");
+	}
+	
+	@PostMapping(value = "/nova", params = "imprimir")
+	public ResponseEntity<byte[]>  salvarEImprimir(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) throws Exception {
+		validarVenda(venda, result);
+		if (result.hasErrors()) {
+			return null;
+		}		
+		venda.setUsuario(usuarioSistema.getUsuario());		
+		cadastroVendaService.emitir(venda);
+		attributes.addFlashAttribute("mensagem", "Orçamento emitida com sucesso");
+		
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico();
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
 	}
 	
 	@PostMapping(value = "/nova", params = "enviarEmail")
