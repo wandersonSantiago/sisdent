@@ -1,9 +1,11 @@
 package com.sisdent.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +31,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.algaworks.brewer.dto.VendaMes;
 import com.algaworks.brewer.dto.VendaOrigem;
 import com.sisdent.controller.page.PageWrapper;
-import com.sisdent.controller.validator.VendaValidator;
-import com.sisdent.mail.Mailer;
 import com.sisdent.model.ItemVenda;
 import com.sisdent.model.Produto;
 import com.sisdent.model.StatusVenda;
@@ -82,8 +82,8 @@ public class VendasController {
 	}
 	
 	@PostMapping(value = "/nova", params = "salvar")
-	public ModelAndView salvar(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		//validarVenda(venda, result);
+	public ModelAndView salvar(@Valid Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+		validarVenda(venda, result);
 		if (result.hasErrors()) {
 			return nova(venda);
 		}
@@ -91,12 +91,12 @@ public class VendasController {
 		venda.setUsuario(usuarioSistema.getUsuario());
 		
 		cadastroVendaService.salvar(venda);
-		attributes.addFlashAttribute("mensagem", "Orçamento salva com sucesso");
+		attributes.addFlashAttribute("mensagem", "Orçamento salvo com sucesso");
 		return new ModelAndView("redirect:/vendas/nova");
 	}
 
 	@PostMapping(value = "/nova", params = "emitir")
-	public ModelAndView emitir(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+	public ModelAndView emitir(@Valid Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		validarVenda(venda, result);
 		if (result.hasErrors()) {
 			return nova(venda);
@@ -105,41 +105,38 @@ public class VendasController {
 		venda.setUsuario(usuarioSistema.getUsuario());
 		
 		cadastroVendaService.emitir(venda);
-		attributes.addFlashAttribute("mensagem", "Orçamento emitida com sucesso");
+		attributes.addFlashAttribute("mensagem", "Orçamento emitido com sucesso");
 		return new ModelAndView("redirect:/vendas/nova");
 	}
 	
 	@PostMapping(value = "/nova", params = "imprimir")
-	public ResponseEntity<byte[]>  salvarEImprimir(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) throws Exception {
+	public ResponseEntity<byte[]>  salvarEImprimir(@Valid Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) throws Exception {
 		validarVenda(venda, result);
 		if (result.hasErrors()) {
 			return null;
 		}		
 		venda.setUsuario(usuarioSistema.getUsuario());		
-		cadastroVendaService.emitir(venda);
-		attributes.addFlashAttribute("mensagem", "Orçamento emitida com sucesso");
+		cadastroVendaService.salvar(venda);
+		attributes.addFlashAttribute("mensagem", "Orçamento emitido com sucesso");
 		
-		byte[] relatorio = relatorioService.gerarRelatorioGenerico();
+		List<Venda> vendas = new ArrayList<>();
+		vendas.add(venda);
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(vendas, "/relatorios/orcamento.jasper");
 		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
 				.body(relatorio);
 	}
 	
-	@PostMapping(value = "/nova", params = "enviarEmail")
-	public ModelAndView enviarEmail(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		//validarVenda(venda, result);
-		if (result.hasErrors()) {
-			return nova(venda);
-		}
+	@PostMapping(value = "/nova", params = "enviarImprimir")
+	public ResponseEntity<byte[]> enviarEmail(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema)throws Exception  {
+		List<Venda> vendas = new ArrayList<>();
+		vendas.add(venda);
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(vendas, "/relatorios/orcamento.jasper");
 		
-		venda.setUsuario(usuarioSistema.getUsuario());
-		
-		venda = cadastroVendaService.salvar(venda);
-		//mailer.enviar(venda);
-		
-		attributes.addFlashAttribute("mensagem", String.format("Orçamento nº %d salva com sucesso e e-mail enviado", venda.getCodigo()));
-		return new ModelAndView("redirect:/vendas/nova");
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
 	}
 	
 	@PostMapping("/item")

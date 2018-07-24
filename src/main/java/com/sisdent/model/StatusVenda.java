@@ -3,8 +3,8 @@ package com.sisdent.model;
 public enum StatusVenda {
 
 	ORCAMENTO("Orçamento"), 
-	EMITIDA("Emitida"), 
-	CANCELADA("Cancelada");
+	EMITIDA("Emitido"), 
+	CANCELADA("Cancelado");
 
 	private String descricao;
 

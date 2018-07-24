@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
+encoding//src/main/resources/relatorios/agendamento.jrxml=UTF-8
 encoding//src/main/resources/relatorios/orcamento.jrxml=UTF-8
 encoding//src/main/resources/relatorios/relatorio_vendas_emitidas.jrxml=UTF-8
 encoding//src/main/resources/static/stylesheets/brewer.css=UTF-8

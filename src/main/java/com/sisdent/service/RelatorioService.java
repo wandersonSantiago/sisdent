@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.brewer.dto.PeriodoRelatorio;
+import com.sisdent.model.Venda;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -57,21 +58,21 @@ public class RelatorioService {
 		}
 	}
 	
-	public byte[] gerarRelatorioGenerico() throws Exception {
+	public byte[] gerarRelatorioGenerico(List<?> list, String caminho) throws Exception {
 	
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("format", "pdf");
 		
 		InputStream inputStream = this.getClass()
-				.getResourceAsStream("/relatorios/orcamento.jasper");
+				.getResourceAsStream(caminho);
 		
-		Connection con = this.dataSource.getConnection();
+		JRDataSource datasource = new JRBeanCollectionDataSource(list, true);
 		
 		try {
-			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros, con);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros, datasource);
 			return JasperExportManager.exportReportToPdf(jasperPrint);
 		} finally {
-			con.close();
+			
 		}
 	}
 	

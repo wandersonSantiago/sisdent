@@ -72,7 +72,7 @@
 
 			<div class="row">
 				<div class="form-group  col-sm-4  bw-required" brewer:classforerror="cliente.codigo">
-					<label class="control-label" for="nomeCliente">Cliente</label>
+					<label class="control-label" for="nomeCliente">Paciente</label>
 					<div class="input-group">
 				      <input id="nomeCliente" type="text" readonly="readonly" class="form-control" th:field="*{cliente.nome}" 
 				      	placeholder="Clique na lupa para pesquisar o cliente"/>
@@ -125,11 +125,11 @@
 					    <span class="caret"></span>
 					  </button>					  
 					  <ul class="dropdown-menu">
-					    <li><a href="#" class="js-submit-btn" data:acao="emitir">Salvar e emitir</a></li>
-					    <li><a href="#" class="js-submit-btn" data:acao="imprimir">Salvar e emitir e imprrmir</a></li>
+					    	<li th:unless="${venda.nova}"><a href="#" class="js-submit-btn" data:acao="emitir">Emitir</a></li>
+					      	<li th:if="${venda.nova}" ><a href="#" class="js-submit-btn" data:acao="imprimir">Salvar orçamento e imprimir</a></li>
+					    	<li th:unless="${venda.nova}" ><a href="#" class="js-submit-btn" data:acao="enviarImprimir">Imprimir</a></li>
 					  </ul>
-					</div>
-				
+					</div>				
 					<button class="btn  btn-danger  js-submit-btn" data:acao="cancelar" th:unless="${venda.nova}">Cancelar</button>
 				</div>
 			</div>

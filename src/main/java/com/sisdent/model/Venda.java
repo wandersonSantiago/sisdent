@@ -1,5 +1,6 @@
 package com.sisdent.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,13 +23,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.lang.NonNull;
 
 @Entity
 @Table(name = "venda")
-@DynamicUpdate
-public class Venda {
+public class Venda implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,20 +41,24 @@ public class Venda {
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;
 
+	@NotNull(message="Valor do serviço obrigatório")
 	@Column(name = "valor_frete")
-	private BigDecimal valorFrete;
+	private BigDecimal valorFrete = BigDecimal.ZERO;
 
+	
 	@Column(name = "valor_desconto")
-	private BigDecimal valorDesconto;
+	private BigDecimal valorDesconto = BigDecimal.ZERO;
 
 	@Column(name = "valor_total")
 	private BigDecimal valorTotal = BigDecimal.ZERO;
 
+	@NotBlank(message = "A observação é obrigatória")
 	private String observacao;
 
 	@Column(name = "data_hora_entrega")
 	private LocalDateTime dataHoraEntrega;
 
+	@NotNull(message="Paciente obrigatório")
 	@ManyToOne
 	@JoinColumn(name = "codigo_cliente")
 	private Cliente cliente;

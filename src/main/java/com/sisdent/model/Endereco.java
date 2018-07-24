@@ -83,4 +83,11 @@ public class Endereco implements Serializable {
 		return null;
 	}
 	
+	public String getNomeRuaNumeroEBairro() {
+		if (this.cidade != null) {
+			return this.logradouro + "," + this.numero ;
+		}
+		
+		return null;
+	}
 }

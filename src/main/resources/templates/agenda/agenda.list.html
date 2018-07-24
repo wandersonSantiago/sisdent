@@ -88,8 +88,13 @@
 				
 	            <tbody>
 					<tr th:each="agenda : ${pagina.conteudo}">
-						<td th:text="${agenda.codigo}"></td>
-						<td th:text="${agenda.cliente.nome}"></td>
+						<td >
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"  th:text="${agenda.codigo}"
+		   							th:href="@{/agendas/{codigo}(codigo=${agenda.codigo})}">
+		   						<i class="glyphicon glyphicon-pencil"></i>
+		   					</a>
+						</td>
+						<td title="Click para visualizar as informações do paciente" ><a  th:href="@{/clientes/show/{codigo}(codigo=${agenda.cliente.codigo})}" th:text="${agenda.cliente.nome}"></a></td>						
 						<td th:text="${{agenda.data}}"></td>
 						<td th:text="${{agenda.horario}}"></td>
 						<td th:text="${agenda.usuario.nome}"></td>

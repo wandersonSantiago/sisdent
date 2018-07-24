@@ -94,7 +94,7 @@
 					    <span class="caret"></span>
 					  </button>					  
 					  <ul class="dropdown-menu">
-					    <li><a href="#" class="js-submit-btn" data:acao="emitir" th:disabled="${agenda.disable}">Salvar e imprimir</a></li>
+					    <li><a href="#" class="js-submit-btn" data:acao="enviarImprimir" th:disabled="${agenda.disable}">Salvar e imprimir</a></li>
 					  </ul>
 					</div>
 				</div>
@@ -106,9 +106,9 @@
 </section>
 
 <th:block layout:fragment="javascript-extra">
-	<script th:src="@{/javascripts/vendors/jquery.easy-autocomplete.min.js}"></script>
 	<script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
 	<script th:src="@{/javascripts/cliente.pesquisa-rapida.js}"></script>	
+	<script th:src="@{/javascripts/venda.botoes-submit.js}"></script>
 </th:block>
 
 </html>

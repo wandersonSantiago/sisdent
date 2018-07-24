@@ -26,7 +26,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sisdent.controller.page.PageWrapper;
 import com.sisdent.model.Anaminese;
 import com.sisdent.model.Cliente;
+import com.sisdent.model.StatusAgenda;
 import com.sisdent.model.TipoPessoa;
+import com.sisdent.repository.Agendas;
 import com.sisdent.repository.Anamineses;
 import com.sisdent.repository.Clientes;
 import com.sisdent.repository.Estados;
@@ -49,6 +51,9 @@ public class ClienteController {
 	private Clientes clientes;
 	@Autowired
 	private Anamineses anamineseRepository;
+	
+	@Autowired
+	private Agendas agendasRepository;
 	
 	
 	@RequestMapping("/novo")
@@ -129,10 +134,16 @@ public class ClienteController {
 	@GetMapping("/show/{codigo}")
 	public ModelAndView show(@PathVariable Long codigo) {
 		Cliente cliente = clienteService.findOne(codigo);
+		List<Agendas> agendas = agendasRepository.findByClienteAndStatus(cliente, StatusAgenda.REALIZADA);
 		Anaminese anaminese = anamineseRepository.findByCliente(cliente);
 		ModelAndView mv = new ModelAndView("cliente/cliente.show");
 		mv.addObject(cliente);
-		mv.addObject(anaminese);
+		if(anaminese != null) {
+			mv.addObject(anaminese);
+		}	
+		if(agendas != null) {
+			mv.addObject(agendas);
+		}
 		return mv;
 	}
 	private void validarTamanhoNome(String nome) {

@@ -103,7 +103,11 @@
 				
 	            <tbody>
 					<tr th:each="venda : ${pagina.conteudo}">
-						<td th:text="${venda.codigo}"></td>
+						<td>
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"  th:text="${venda.codigo}"
+		   							th:href="@{/vendas/{codigo}(codigo=${venda.codigo})}">
+		   					</a>
+						</td>
 						<td th:text="${venda.cliente.nome}"></td>
 						<td th:text="${{venda.dataCriacao}}"></td>
 						<td th:text="|R$ ${{venda.valorTotal}}|"></td>

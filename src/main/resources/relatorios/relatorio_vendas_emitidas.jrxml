@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_vendas_emitidas" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c38d4155-5ef9-40fc-ba01-896003ab3456">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Brewer - MySQL Adapter"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="data_inicio" class="java.util.Date"/>
 	<parameter name="data_fim" class="java.util.Date"/>
 	<queryString>
@@ -38,8 +38,8 @@
 				<text><![CDATA[Relatório de Orçamento Emitidos]]></text>
 			</staticText>
 			<image>
-				<reportElement x="0" y="14" width="270" height="50" uuid="16b89b3a-5144-4c4a-ad2a-7e5904674b42"/>
-				<imageExpression><![CDATA["src/main/resources/relatorios/logo.png"]]></imageExpression>
+				<reportElement x="10" y="10" width="200" height="60" uuid="ee9d4e29-cd81-458d-af60-f42e8e02c455"/>
+				<imageExpression><![CDATA["src/main/resources/relatorios/logo_nome.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</title>

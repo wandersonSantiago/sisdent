@@ -1,11 +1,16 @@
 package com.sisdent.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -25,11 +30,13 @@ import com.sisdent.model.Agenda;
 import com.sisdent.model.Cliente;
 import com.sisdent.model.StatusAgenda;
 import com.sisdent.model.StatusVenda;
+import com.sisdent.model.Venda;
 import com.sisdent.repository.Agendas;
 import com.sisdent.repository.filter.AgendaFilter;
 import com.sisdent.security.UsuarioSistema;
 import com.sisdent.service.AgendasService;
 import com.sisdent.service.ClienteService;
+import com.sisdent.service.RelatorioService;
 import com.sisdent.service.exception.ImpossivelExcluirEntidadeException;
 import com.sisdent.service.exception.NomeOuCodigoJaCadastradoException;
 
@@ -45,6 +52,9 @@ public class AgendaController {
 	
 	@Autowired
 	private Agendas agendas;
+	
+	@Autowired
+	private RelatorioService relatorioService;
 	
 	@RequestMapping("/novo")
 	public ModelAndView novo(Agenda agenda) {
@@ -69,6 +79,30 @@ public class AgendaController {
 		return new ModelAndView("redirect:/agendas");
 	}
 	
+	@PostMapping(value = "/novo", params = "enviarImprimir")
+	public ResponseEntity<byte[]> enviarEmail(@Valid Agenda agenda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema)throws Exception  {
+		List<Agenda> agendas = new ArrayList<>();
+		agendas.add(agendaService.salvar(agenda, usuarioSistema));
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(agendas, "/relatorios/agendamento.jasper");
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
+	}
+	
+	@PostMapping(value = "/{codigo}", params = "enviarImprimir")
+	public ResponseEntity<byte[]> enviarImprimir(@PathVariable Long codigo,@Valid Agenda agenda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema)throws Exception  {
+		List<Agenda> agendas = new ArrayList<>();
+		if(codigo != null) {
+			agenda.setCodigo(codigo);
+		}
+		agendas.add(agendaService.salvar(agenda, usuarioSistema));
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(agendas, "/relatorios/agendamento.jasper");
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
+	}
 	@PostMapping( "/{codigo}" )
 	public ModelAndView editar(@PathVariable Long codigo, @Valid Agenda agenda, BindingResult result, RedirectAttributes attributes,  @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		if (result.hasErrors()) {

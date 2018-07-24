@@ -70,18 +70,16 @@
 					<span><b>CEP:</b></span>
 					<span th:text="*{endereco.cep}"></span>	
 					&nbsp;&nbsp;
-					<span><b>Estado:</b></span>
-					<span th:text="*{endereco.cidade.estado.nome}"></span>	
-					&nbsp;&nbsp;
-					<span><b>Cidade:</b></span>
-					<span th:text="*{endereco.cidade.nome}"></span>	
+					<span><b>Cidade/Estado:</b></span>
+					<span th:text="*{endereco.nomeCidadeSiglaEstado}"></span>	
+					
 				</div>							
 			</div>		<br>
 			<div class="row" align="center">
 				<div class="alert alert-info">Anaminese</div>
 			</div>	
 			
-			<div  th:object="${anaminese}">
+			<div th:if="${anaminese} != null" th:object="${anaminese}">
 			<div class="row">
 				<div class="col-sm-2">
 						<span><b>Fumante:</b></span>

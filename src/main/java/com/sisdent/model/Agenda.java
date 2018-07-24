@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "agenda")
@@ -26,10 +28,13 @@ public class Agenda {
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;
 
+	@NotBlank(message = "A observação é obrigatória")
 	private String observacao;
 
+	
 	@ManyToOne
 	@JoinColumn(name = "codigo_cliente")
+	@NotNull(message = "O cliente é obrigatório")
 	private Cliente cliente;
 
 	@ManyToOne
@@ -39,10 +44,10 @@ public class Agenda {
 	@Enumerated(EnumType.STRING)
 	private StatusAgenda status = StatusAgenda.PENDENTE;
 
-	
+	@NotNull(message = "A data é obrigatória")
 	private LocalDate data;
 
-	
+	@NotNull(message = "O horario é obrigatório")
 	private LocalTime horario;
 
 	public Long getCodigo() {
