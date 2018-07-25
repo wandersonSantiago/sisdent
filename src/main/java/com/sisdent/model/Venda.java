@@ -73,6 +73,10 @@ public class Venda implements Serializable {
 	@OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<>();
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orcamento")
+    private List<Parcela> parcelas = new ArrayList<>();
+
+	
 	@Transient
 	private String uuid;
 

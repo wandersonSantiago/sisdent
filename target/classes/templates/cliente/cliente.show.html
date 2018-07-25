@@ -155,6 +155,18 @@
 		</div>	
 		<div class="row" align="center">
 				<div class="alert alert-info">Consultas</div>
+			</div>
+			<div th:each="agenda : ${agendas}">								
+				<div class="panel panel-primary col-sm-3">				
+				  <div class="panel-body" align="center">
+				  <label>Dentista:</label>
+				   	<label th:text="${agenda.usuario.nome}"></label><br>
+				   	<label>Data:</label>
+				   	<label th:text="${agenda.data}"></label>
+				   	<label th:text="${agenda.horario}"></label>
+				   	<div th:class="${agenda.status.descricao	} == 'Cancelada'? 'red' : 'blue'"  th:text="${agenda.status}"></div>
+				  </div>
+				</div>
 			</div>				
 		</form>
 	</div>

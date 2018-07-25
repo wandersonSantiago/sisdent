@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sisdent.controller.page.PageWrapper;
+import com.sisdent.model.Agenda;
 import com.sisdent.model.Anaminese;
 import com.sisdent.model.Cliente;
 import com.sisdent.model.StatusAgenda;
@@ -134,7 +135,7 @@ public class ClienteController {
 	@GetMapping("/show/{codigo}")
 	public ModelAndView show(@PathVariable Long codigo) {
 		Cliente cliente = clienteService.findOne(codigo);
-		List<Agendas> agendas = agendasRepository.findByClienteAndStatus(cliente, StatusAgenda.REALIZADA);
+		List<Agenda> agendas = agendasRepository.findByClienteAndStatus(cliente, StatusAgenda.REALIZADA);
 		Anaminese anaminese = anamineseRepository.findByCliente(cliente);
 		ModelAndView mv = new ModelAndView("cliente/cliente.show");
 		mv.addObject(cliente);
@@ -142,7 +143,7 @@ public class ClienteController {
 			mv.addObject(anaminese);
 		}	
 		if(agendas != null) {
-			mv.addObject(agendas);
+			mv.addObject("agendas",agendas);
 		}
 		return mv;
 	}

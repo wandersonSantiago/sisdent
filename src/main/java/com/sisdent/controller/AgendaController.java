@@ -128,6 +128,9 @@ public class AgendaController {
 		mv.addObject("status", StatusAgenda.values());
 		PageWrapper<Agenda> paginaWrapper = new PageWrapper<>(agendas.filtrar(agendaFilter, pageable)
 				, httpServletRequest);
+		
+		List<Agenda> hoje = agendaService.buscarSomenteDoDia();
+		mv.addObject("agendas", hoje);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
 	}

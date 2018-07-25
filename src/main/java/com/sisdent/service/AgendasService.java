@@ -1,6 +1,8 @@
 package com.sisdent.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.PersistenceException;
 
@@ -48,6 +50,10 @@ public class AgendasService {
 
 	public Agenda findByCliente(Cliente cliente) {
 		return agendas.findByCliente(cliente);
+	}
+
+	public List<Agenda> buscarSomenteDoDia() {
+		return agendas.findByDataLessThanEqualAndDataGreaterThanEqual(LocalDate.now(),LocalDate.now());
 	}
 	
 }
