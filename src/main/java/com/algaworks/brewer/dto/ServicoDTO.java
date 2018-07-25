@@ -2,24 +2,18 @@ package com.algaworks.brewer.dto;
 
 import java.math.BigDecimal;
 
-import org.springframework.util.StringUtils;
-
 public class ServicoDTO {
 
 	private Long codigo;
-	private String sku;
 	private String nome;
-	private String origem;
+	private String descricao;
 	private BigDecimal valor;
-	private String foto;
-	private String urlThumbnailFoto;
 
-	public ServicoDTO(Long codigo, String sku, String nome,  BigDecimal valor, String foto) {
+	public ServicoDTO(Long codigo, String nome, String descricao,  BigDecimal valor) {
 		this.codigo = codigo;
-		this.sku = sku;
 		this.nome = nome;
+		this.descricao = descricao;
 		this.valor = valor;
-		this.foto = StringUtils.isEmpty(foto) ? "cerveja-mock.png" : foto;
 	}
 
 	public Long getCodigo() {
@@ -30,14 +24,6 @@ public class ServicoDTO {
 		this.codigo = codigo;
 	}
 
-	public String getSku() {
-		return sku;
-	}
-
-	public void setSku(String sku) {
-		this.sku = sku;
-	}
-
 	public String getNome() {
 		return nome;
 	}
@@ -46,12 +32,12 @@ public class ServicoDTO {
 		this.nome = nome;
 	}
 
-	public String getOrigem() {
-		return origem;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setOrigem(String origem) {
-		this.origem = origem;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	public BigDecimal getValor() {
@@ -62,20 +48,5 @@ public class ServicoDTO {
 		this.valor = valor;
 	}
 
-	public String getFoto() {
-		return foto;
-	}
-
-	public void setFoto(String foto) {
-		this.foto = foto;
-	}
-
-	public String getUrlThumbnailFoto() {
-		return urlThumbnailFoto;
-	}
-
-	public void setUrlThumbnailFoto(String urlThumbnailFoto) {
-		this.urlThumbnailFoto = urlThumbnailFoto;
-	}
-
+	
 }

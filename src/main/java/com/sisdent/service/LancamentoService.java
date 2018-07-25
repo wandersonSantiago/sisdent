@@ -100,4 +100,8 @@ public class LancamentoService {
 		return lancamentoSalvo.get();
 	}
 
+	public void excluir(Lancamento lancamento) {
+		
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.sisdent.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,68 +23,67 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.algaworks.brewer.dto.ServicoDTO;
 import com.sisdent.controller.page.PageWrapper;
-import com.sisdent.model.Servico;
+import com.sisdent.model.Lancamento;
 import com.sisdent.repository.Categorias;
-import com.sisdent.repository.Servicos;
-import com.sisdent.repository.filter.ServicoFilter;
-import com.sisdent.service.ServicoService;
+import com.sisdent.repository.LancamentoRepository;
+import com.sisdent.repository.filter.LancamentoFilter;
+import com.sisdent.service.LancamentoService;
 import com.sisdent.service.exception.ImpossivelExcluirEntidadeException;
 
 @Controller
-@RequestMapping("/servicos")
-public class ServicoController {
+@RequestMapping("/lancamentos")
+public class LancamentoController {
 	
 	@Autowired
 	private Categorias categorias;
 	
 	@Autowired
-	private ServicoService servicoService;
+	private LancamentoService lancamentoService;
 	
 	@Autowired
-	private Servicos servicos;
+	private LancamentoRepository lancamentos;
 
 	@RequestMapping("/novo")
-	public ModelAndView nova(Servico servico) {
-		ModelAndView mv = new ModelAndView("servico/servico.form");
+	public ModelAndView nova(Lancamento lancamento) {
+		ModelAndView mv = new ModelAndView("financas/lancamento.form");
 		mv.addObject("categorias", categorias.findAll());
 		return mv;
 	}
 	
 	@RequestMapping(value = { "/novo", "{\\d+}" }, method = RequestMethod.POST)
-	public ModelAndView salvar(@Valid Servico servico, BindingResult result, Model model, RedirectAttributes attributes) {
+	public ModelAndView salvar(@Valid Lancamento lancamento, BindingResult result, Model model, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
-			return nova(servico);
+			return nova(lancamento);
 		}
 		
-		servicoService.salvar(servico);
-		attributes.addFlashAttribute("mensagem", "Servico salvo com sucesso!");
-		return new ModelAndView("redirect:/servicos/novo");
+		lancamentoService.salvar(lancamento);
+		attributes.addFlashAttribute("mensagem", "Lancamento salvo com sucesso!");
+		return new ModelAndView("redirect:/lancamentos/novo");
 	}
 	
 	@GetMapping
-	public ModelAndView pesquisar(ServicoFilter servicoFilter, BindingResult result
+	public ModelAndView pesquisar(LancamentoFilter lancamentoFilter, BindingResult result
 			, @PageableDefault(size = 24) Pageable pageable, HttpServletRequest httpServletRequest) {
-		ModelAndView mv = new ModelAndView("servico/servico.list");
+		ModelAndView mv = new ModelAndView("financas/lancamento.list");
 		mv.addObject("categorias", categorias.findAll());
 		
-		PageWrapper<Servico> paginaWrapper = new PageWrapper<>(servicos.filtrar(servicoFilter, pageable)
+		PageWrapper<Lancamento> paginaWrapper = new PageWrapper<>(lancamentos.filtrar(lancamentoFilter, pageable)
 				, httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
 	}
 	
-	
 	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody List<ServicoDTO> pesquisar(String nome) {
-		return servicos.porNome(nome);
+	public @ResponseBody List<Lancamento> pesquisar(String codigoOuNome) {
+		List<Lancamento> lancamentoFiltrados = lancamentos.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		return lancamentoFiltrados;
 	}
 	
 	@DeleteMapping("/{codigo}")
-	public @ResponseBody ResponseEntity<?> excluir(@PathVariable("codigo") Servico servico) {
+	public @ResponseBody ResponseEntity<?> excluir(@PathVariable("codigo") Lancamento lancamento) {
 		try {
-			servicoService.excluir(servico);
+			lancamentoService.excluir(lancamento);
 		} catch (ImpossivelExcluirEntidadeException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -91,9 +91,9 @@ public class ServicoController {
 	}
 	
 	@GetMapping("/{codigo}")
-	public ModelAndView editar(@PathVariable("codigo") Servico servico) {
-		ModelAndView mv = nova(servico);
-		mv.addObject(servico);
+	public ModelAndView editar(@PathVariable("codigo") Lancamento lancamento) {
+		ModelAndView mv = nova(lancamento);
+		mv.addObject(lancamento);
 		return mv;
 	}
 	

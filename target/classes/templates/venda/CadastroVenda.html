@@ -105,7 +105,18 @@
 				</div>
 			</div>
 			
-			
+			<div class="row">			
+				<div class="form-group col-lg-12" align="centar">
+					<label>Pesquisa de Serviço:</label>
+					<input type="text" class="form-control js-nome-servico-input" id="servico" placeholder="Pesquise e adicione o serviço pelo nome" autofocus="autofocus" >
+				</div>
+			</div>
+			<div class="bw-tabela-cervejas">
+				<div class="bw-tabela-cervejas__vazio">
+					<i class="glyphicon glyphicon-shopping-cart"></i>
+					<span>Você ainda não adicionou nenhum serviço</span>
+				</div>
+			</div>
 			
 			<div class="tab-content">									
 				<div class="row">					
@@ -137,7 +148,7 @@
 	</div>
 	
 	<th:block th:replace="cliente/PesquisaRapidaClientes :: pesquisaRapidaClientes"></th:block>
-	<th:block th:replace="hbs/TemplateAutocompleteProduto"></th:block>
+	<th:block th:replace="hbs/TemplateAutocompleteServico"></th:block>
 </section>
 
 <th:block layout:fragment="javascript-extra">
@@ -146,7 +157,7 @@
 	<script th:src="@{/javascripts/cliente.pesquisa-rapida.js}"></script>
 	<script th:src="@{/javascripts/venda.autocomplete-itens.js}"></script>
 	<script th:src="@{/javascripts/venda.tabela-itens.js}"></script>
-	<script th:src="@{/javascripts/venda.js}"></script>
+	<!-- <script th:src="@{/javascripts/venda.js}"></script> -->
 	<script th:src="@{/javascripts/venda.botoes-submit.js}"></script>
 	<script>
 	$(function() {

@@ -10,6 +10,8 @@ public class LancamentoFilter {
 
 	private String descricao;
 	
+	private String tipo;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataVencimentoDe;
 	
@@ -38,6 +40,14 @@ public class LancamentoFilter {
 
 	public void setDataVencimentoAte(LocalDate dataVencimentoAte) {
 		this.dataVencimentoAte = dataVencimentoAte;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 }

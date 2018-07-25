@@ -13,6 +13,6 @@ public interface ServicosQueries {
 
 	public Page<Servico> filtrar(ServicoFilter filtro, Pageable pageable);
 	
-	public List<ServicoDTO> porCodigoOuNome(String codigoOuNome);
+	public List<ServicoDTO> porNome(String nome);
 		
 }

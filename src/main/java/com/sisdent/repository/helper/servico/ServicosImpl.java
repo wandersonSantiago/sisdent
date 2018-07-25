@@ -42,11 +42,11 @@ public class ServicosImpl implements ServicosQueries {
 	}
 	
 	@Override
-	public List<ServicoDTO> porCodigoOuNome(String codigoOuNome) {
-		String jpql = "select new com.algaworks.brewer.dto.ServicoDTO(codigo, codigoBarras, nome, origem, valor) "
-				+ "from Servico where lower(codigoBarras) like lower(:codigoOuNome) or lower(nome) like lower(:codigoOuNome)";
+	public List<ServicoDTO> porNome(String nome) {
+		String jpql = "select new com.algaworks.brewer.dto.ServicoDTO(codigo, nome, descricao, valor) "
+				+ "from Servico where lower(nome) like lower(:nome)";
 		List<ServicoDTO> produtoFiltrados = manager.createQuery(jpql, ServicoDTO.class)
-					.setParameter("codigoOuNome", codigoOuNome + "%")
+					.setParameter("nome", nome + "%")
 					.getResultList();
 		return produtoFiltrados;
 	}

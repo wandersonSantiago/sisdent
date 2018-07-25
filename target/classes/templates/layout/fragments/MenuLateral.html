@@ -41,7 +41,21 @@
 			            </li>
 			        </ul>
 			    </li>
-
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-credit-card"></i><span>Financeiro</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/lancamentos.+}">
+			            	<a th:href="@{/lancamentos/novo}">Lançamentos</a>
+			            </li>			            
+			            <li class="aw-menu__item  aw-menu__item--link" brewer:menu="@{/lancamentos}">
+			            	<a th:href="@{/lancamentos}">Pesquisa de lançamentos</a>
+			            </li>
+			        </ul>
+			    </li>
         		<li class="aw-menu__item">
           			<a href="#">
             			<i class="fa  fa-fw  fa-truck"></i><span>Estoque</span>

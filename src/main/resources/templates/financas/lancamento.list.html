@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}"
+	xmlns:brewer="http://brewer.algaworks.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data">
+	
+<head>
+	<title>Lançamentos</title>
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de Lançamentos</h1>
+				</div>
+				
+				<div class="col-xs-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/lancamentos/novo}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Novo Lançamentos</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${lancamentoFilter}" th:action="@{/lancamentos}">
+		
+		<div class="row">
+				<div class="col-sm-4">
+					<div class="aw-box  js-valor-total-box-container">
+						<div class="aw-box__icon">
+							<i class="fa  fa-usd  fa-3x"></i>
+						</div>
+						<div class="aw-box__value">R$<span class="js-valor-total-box" >0,00</span></div>
+						<div class="aw-box__title">Total em Conta</div>
+					</div>
+				</div>
+				
+				<div class="col-sm-4">
+					<div class="aw-box">
+						<div class="aw-box__icon">
+							<i class="fa  fa-usd  fa-3x"></i>
+						</div>
+							<div class="aw-box__value">R$<span class="js-valor-total-box" >0,00</span></div>
+						<div class="aw-box__title">Contas a receber</div>
+					</div>
+				</div>
+				
+				<div class="col-sm-4">
+					<div class="aw-box">
+						<div class="aw-box__icon">
+							<i class="fa  fa-usd  fa-3x"></i>
+						</div>
+							<div class="aw-box__value">R$<span class="js-valor-total-box" >0,00</span></div>
+							<span class="aw-box__title" >Contas a Pagar</span>
+						</div>
+					</div>
+				</div>
+			<div class="row">
+				<div class="form-group  col-sm-6">
+					<label class="control-label" for="codigo">Descricao</label>
+					<input type="text" class="form-control" id="codigo" autofocus="autofocus" th:field="*{descricao}"/>
+				</div>
+				
+				<div class="form-group  col-sm-6">
+					<label for="status" class="control-label">Tipo</label>
+					<select id="status" class="form-control" th:field="*{tipo}">
+	                    <option value="">Todos os status</option>
+	                </select>
+				</div>
+			</div>
+			<div class="row">		
+			<div class="form-group  col-sm-6">
+					<label for="status" class="control-label">Categoria</label>
+					<select id="status" class="form-control" th:field="*{tipo}">
+	                    <option value="">Todos as categorias</option>
+	                </select>
+				</div>		
+			<div class="form-group  col-sm-6">
+					<label for="valorMinimo">Valor total</label>
+					<div class="form-inline">
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorMinimo" />
+						<label for="valorMaximo" class="aw-form-label-between">até</label>
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorMaximo" />
+					</div>
+				</div>
+		</div>
+			
+			<div class="row">
+				<div class="form-group  col-sm-6">
+					<label for="dataCriacaoInicial">Data de cadastro</label>
+					<div class="form-inline">
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
+							 autocomplete="off"/>
+						<label for="dataCriacaoFinal" class="aw-form-label-between">até</label>
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
+							 autocomplete="off"/>
+					</div>
+				</div>
+				
+				<div class="form-group  col-sm-6">
+					<label for="dataCriacaoInicial">Data de Vencimento</label>
+					<div class="form-inline">
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
+							 autocomplete="off"/>
+						<label for="dataCriacaoFinal" class="aw-form-label-between">até</label>
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
+							 autocomplete="off"/>
+					</div>
+				</div>
+				
+			</div>
+		
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+	            <thead>
+	            	<tr>
+	                	<th>Código</th>
+	                	<th>
+	                		<brewer:order page="${pagina}" field="c.nome" text="Descrição"/>
+	                	</th>
+	                	<th>Tipo</th>
+	                	<th>Categoria</th>
+	                	<th>Data de cadastro</th>
+	                	<th>Vencimento</th>
+	                	<th>Valor</th>
+	                	
+	                	
+	                 	<th class="table-col-acoes"></th>
+					</tr>
+				</thead>
+				
+	            <tbody>
+					<tr th:each="lancamento : ${pagina.conteudo}">
+						<td>
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"  th:text="${lancamento.codigo}"
+		   							th:href="@{/lancamentos/{codigo}(codigo=${lancamento.codigo})}">
+		   					</a>
+						</td>
+						<td th:text="${lancamento.cliente.nome}"></td>
+						<td th:text="${{lancamento.dataCriacao}}"></td>
+						<td th:text="|R$ ${{lancamento.valorTotal}}|"></td>
+						<td th:text="${lancamento.usuario.nome}"></td>
+						<td th:text="${lancamento.status.descricao}"></td>
+	                 	<td class="text-center">
+		   					<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
+		   							th:href="@{/lancamentos/{codigo}(codigo=${lancamento.codigo})}">
+		   						<i class="glyphicon glyphicon-pencil"></i>
+		   					</a>
+	                 	</td>
+	                </tr>
+	                
+	                <tr th:if="${pagina.vazia}">
+	                	<td colspan="7">Nenhum lancamento encontrada</td>
+	                </tr>
+	             </tbody>
+	         </table>
+		</div>
+		
+		<brewer:pagination page="${pagina}"/>
+	</div>
+</section>
+
+</body>
+</html>
