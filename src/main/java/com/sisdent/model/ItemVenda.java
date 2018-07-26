@@ -25,8 +25,8 @@ public class ItemVenda {
 	private BigDecimal valorUnitario;
 
 	@ManyToOne
-	@JoinColumn(name = "codigo_produto")
-	private Produto produto;
+	@JoinColumn(name = "codigo_servico")
+	private Servico servico;
 
 	@ManyToOne
 	@JoinColumn(name = "codigo_venda")
@@ -56,12 +56,12 @@ public class ItemVenda {
 		this.valorUnitario = valorUnitario;
 	}
 
-	public Produto getProduto() {
-		return produto;
+	public Servico getServico() {
+		return servico;
 	}
 
-	public void setProduto(Produto produto) {
-		this.produto = produto;
+	public void setServico(Servico servico) {
+		this.servico = servico;
 	}
 
 	public BigDecimal getValorTotal() {

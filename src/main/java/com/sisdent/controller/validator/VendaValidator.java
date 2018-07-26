@@ -22,7 +22,7 @@ public class VendaValidator implements Validator {
 		ValidationUtils.rejectIfEmpty(errors, "cliente.codigo", "", "Selecione um paciente na pesquisa rápida");
 		
 		Venda venda = (Venda) target;
-		validarSeInformouApenasHorarioEntrega(errors, venda);
+		//validarSeInformouApenasHorarioEntrega(errors, venda);
 		validarSeInformouItens(errors, venda);
 		validarValorTotalNegativo(errors, venda);
 	}

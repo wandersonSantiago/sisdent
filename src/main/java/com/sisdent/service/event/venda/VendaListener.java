@@ -5,21 +5,21 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import com.sisdent.model.ItemVenda;
-import com.sisdent.model.Produto;
-import com.sisdent.repository.Produtos;
+import com.sisdent.model.Servico;
+import com.sisdent.repository.Servicos;
 
 @Component
 public class VendaListener {
 
 	@Autowired
-	private Produtos produtos;
+	private Servicos servicos;
 	
 	@EventListener
 	public void vendaEmitida(VendaEvent vendaEvent) {
 		for (ItemVenda item : vendaEvent.getVenda().getItens()) {
-			Produto produto = produtos.getOne(item.getProduto().getCodigo());
-			produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - item.getQuantidade());
-			produtos.save(produto);
+			Servico servico = servicos.getOne(item.getServico().getCodigo());
+			//servico.setQuantidadeEstoque(servico.getQuantidadeEstoque() - item.getQuantidade());
+			servicos.save(servico);
 		}
 	}
 	

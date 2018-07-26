@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:brewer="http://brewer.algaworks.com"
+	layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+	<title>Cadastro de Paciente</title>
+</head>
+<section layout:fragment="conteudo">
+
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1 >Cadastro de Lançamentos</h1>
+				</div>
+			
+				<div class="col-sm-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/lancamentos}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Pesquisa</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+  <form autocomplete="off">
+    <div class="row">
+      <div class="col-md-6">
+       <label>Tipo</label>
+        <select class="form-control">Tipo</select>
+      </div>
+	</div>
+	<div class="row">
+      <div class="col-md-6">
+        <label>Vencimento</label>
+        <input type="date" class="form-control">
+      </div>
+
+      <div class="col-md-6">
+        <label>Data Pagamento ou recebimento</label>
+        <input type="date" class="form-control">
+      </div>
+	</div>
+	<div class="row">
+      <div class="col-md-12">
+        <label>Descrição</label>
+        <input  type="text" name="descricao" class="form-control">
+      </div>
+	</div>
+	<div class="row">
+      <div class="col-md-6">
+        <label>Valor</label>
+        <input  type="text" name="valor" placeholder="0,00"   class="form-control" >
+      </div>
+
+      <div class="col-md-6">
+        <label>Categoria</label>
+       <select class="form-control">Categoria</select>
+      </div>
+	</div>
+	<div class="row">
+      <div class="col-md-12">
+        <label>Observação</label>
+        <textarea  rows="3" name="observacao" class="form-control"></textarea>
+      </div>
+	</div><br>
+	<div class="row">
+      <div class="col-md-12">
+       	<button type="submit" class="btn  btn-primary">Salvar</button>
+      </div>
+    </div>
+  </form>
+</div>
+</section>
+
+<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/cliente.mascara-cpf-cnpj.js}"></script>
+	<script th:src="@{/javascripts/cliente.combo-estado-cidade.js}"></script>
+</th:block>
+
+</html>

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sisdent.model.Produto;
+import com.sisdent.model.Servico;
 
 public class TabelaItensVendaTest {
 
@@ -25,7 +25,7 @@ public class TabelaItensVendaTest {
 	
 	@Test
 	public void deveCalcularValorTotalComUmItem() throws Exception {
-		Produto cerveja = new Produto();
+		Servico cerveja = new Servico();
 		BigDecimal valor = new BigDecimal("8.90");
 		cerveja.setValor(valor);
 		
@@ -36,12 +36,12 @@ public class TabelaItensVendaTest {
 	
 	@Test
 	public void deveCalcularValorTotalComVariosItens() throws Exception {
-		Produto c1 = new Produto();
+		Servico c1 = new Servico();
 		c1.setCodigo(1L);
 		BigDecimal v1 = new BigDecimal("8.90");
 		c1.setValor(v1);
 		
-		Produto c2 = new Produto();
+		Servico c2 = new Servico();
 		c2.setCodigo(2L);
 		BigDecimal v2 = new BigDecimal("4.99");
 		c2.setValor(v2);
@@ -54,7 +54,7 @@ public class TabelaItensVendaTest {
 	
 	@Test
 	public void deveManterTamanhoDaListaParaMesmasCervejas() throws Exception {
-		Produto c1 = new Produto();
+		Servico c1 = new Servico();
 		c1.setCodigo(1L);
 		c1.setValor(new BigDecimal("4.50"));
 		
@@ -67,7 +67,7 @@ public class TabelaItensVendaTest {
 	
 	@Test
 	public void deveAlterarQuantidadeDoItem() throws Exception {
-		Produto c1 = new Produto();
+		Servico c1 = new Servico();
 		c1.setCodigo(1L);
 		c1.setValor(new BigDecimal("4.50"));
 		
@@ -80,15 +80,15 @@ public class TabelaItensVendaTest {
 	
 	@Test
 	public void deveExcluirItem() throws Exception {
-		Produto c1 = new Produto();
+		Servico c1 = new Servico();
 		c1.setCodigo(1L);
 		c1.setValor(new BigDecimal("8.90"));
 		
-		Produto c2 = new Produto();
+		Servico c2 = new Servico();
 		c2.setCodigo(2L);
 		c2.setValor(new BigDecimal("4.99"));
 		
-		Produto c3 = new Produto();
+		Servico c3 = new Servico();
 		c3.setCodigo(3L);
 		c3.setValor(new BigDecimal("2.00"));
 		

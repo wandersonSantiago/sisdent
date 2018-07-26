@@ -20,7 +20,7 @@
 			<div class="row">
 				<div class="col-xs-10">
 					<h1 th:if="${venda.nova}" >Cadastro de Orçamento</h1>
-					<h1 th:unless="${venda.nova}" >Edição do Orçamento nº [[${venda.codigo}]]</h1>
+					<h1 th:unless="${venda.nova}" >Edição do Orçamento nº [[${venda.codigo}]]</h1> 
 				</div>
 			</div>
 		</div>
@@ -108,10 +108,11 @@
 			<div class="row">			
 				<div class="form-group col-lg-12" align="centar">
 					<label>Pesquisa de Serviço:</label>
-					<input type="text" class="form-control js-nome-servico-input" id="servico" placeholder="Pesquise e adicione o serviço pelo nome" autofocus="autofocus" >
+					<input type="text" class="form-control js-nome-servico-input" data:url="@{/servicos}" id="servico" placeholder="Pesquise e adicione o serviço pelo nome" autofocus="autofocus" >
 				</div>
 			</div>
-			<div class="bw-tabela-cervejas">
+			
+			<div class="bw-tabela-cervejas js-tabela-servicos-container">
 				<div class="bw-tabela-cervejas__vazio">
 					<i class="glyphicon glyphicon-shopping-cart"></i>
 					<span>Você ainda não adicionou nenhum serviço</span>
@@ -157,7 +158,7 @@
 	<script th:src="@{/javascripts/cliente.pesquisa-rapida.js}"></script>
 	<script th:src="@{/javascripts/venda.autocomplete-itens.js}"></script>
 	<script th:src="@{/javascripts/venda.tabela-itens.js}"></script>
-	<!-- <script th:src="@{/javascripts/venda.js}"></script> -->
+	<script th:src="@{/javascripts/venda.js}"></script> 
 	<script th:src="@{/javascripts/venda.botoes-submit.js}"></script>
 	<script>
 	$(function() {

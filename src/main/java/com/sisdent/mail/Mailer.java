@@ -20,7 +20,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.sisdent.model.ItemVenda;
-import com.sisdent.model.Produto;
+import com.sisdent.model.Servico;
 import com.sisdent.model.Venda;
 import com.sisdent.storage.FotoStorage;
 
@@ -48,7 +48,7 @@ public class Mailer {
 		Map<String, String> fotos = new HashMap<>();
 		boolean adicionarMockCerveja = false;
 		for (ItemVenda item : venda.getItens()) {
-			Produto cerveja = item.getProduto();
+			Servico cerveja = item.getServico();
 			if (cerveja != null) {
 				String cid = "foto-" + cerveja.getCodigo();
 				context.setVariable(cid, cid);

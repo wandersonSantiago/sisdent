@@ -31,12 +31,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.algaworks.brewer.dto.VendaMes;
 import com.algaworks.brewer.dto.VendaOrigem;
 import com.sisdent.controller.page.PageWrapper;
+import com.sisdent.controller.validator.VendaValidator;
 import com.sisdent.model.ItemVenda;
-import com.sisdent.model.Produto;
+import com.sisdent.model.Servico;
 import com.sisdent.model.StatusVenda;
 import com.sisdent.model.TipoPessoa;
 import com.sisdent.model.Venda;
-import com.sisdent.repository.Produtos;
+import com.sisdent.repository.Servicos;
 import com.sisdent.repository.Vendas;
 import com.sisdent.repository.filter.VendaFilter;
 import com.sisdent.security.UsuarioSistema;
@@ -50,7 +51,7 @@ import com.sisdent.session.TabelasItensSession;
 public class VendasController {
 	
 	@Autowired
-	private Produtos cervejas;
+	private Servicos servicos;
 	
 	@Autowired
 	private TabelasItensSession tabelaItens;
@@ -60,6 +61,9 @@ public class VendasController {
 	
 	@Autowired
 	private RelatorioUtil relatorioUtil;
+	
+	@Autowired
+	private VendaValidator vendaValidator;
 	
 	@Autowired
 	private Vendas vendas;
@@ -140,23 +144,23 @@ public class VendasController {
 	}
 	
 	@PostMapping("/item")
-	public ModelAndView adicionarItem(Long codigoCerveja, String uuid) {
-		Produto cerveja =  cervejas.getOne(codigoCerveja);
-		tabelaItens.adicionarItem(uuid, cerveja, 1);
+	public ModelAndView adicionarItem(Long codigoServico, String uuid) {
+		Servico servico =  servicos.findById(codigoServico).get();
+		tabelaItens.adicionarItem(uuid, servico, 1);
 		return mvTabelaItensVenda(uuid);
 	}
 	
-	@PutMapping("/item/{codigoCerveja}")
-	public ModelAndView alterarQuantidadeItem(@PathVariable("codigoCerveja") Produto cerveja
+	@PutMapping("/item/{codigoServico}")
+	public ModelAndView alterarQuantidadeItem(@PathVariable("codigoServico") Servico servico
 			, Integer quantidade, String uuid) {
-		tabelaItens.alterarQuantidadeItens(uuid, cerveja, quantidade);
+		tabelaItens.alterarQuantidadeItens(uuid, servico, quantidade);
 		return mvTabelaItensVenda(uuid);
 	}
 	
-	@DeleteMapping("/item/{uuid}/{codigoCerveja}")
-	public ModelAndView excluirItem(@PathVariable("codigoCerveja") Produto cerveja
+	@DeleteMapping("/item/{uuid}/{codigoServico}")
+	public ModelAndView excluirItem(@PathVariable("codigoServico") Servico servico
 			, @PathVariable String uuid) {
-		tabelaItens.excluirItem(uuid, cerveja);
+		tabelaItens.excluirItem(uuid, servico);
 		return mvTabelaItensVenda(uuid);
 	}
 	
@@ -179,7 +183,7 @@ public class VendasController {
 		
 		setUuid(venda);
 		for (ItemVenda item : venda.getItens()) {
-			tabelaItens.adicionarItem(venda.getUuid(), item.getProduto(), item.getQuantidade());
+			tabelaItens.adicionarItem(venda.getUuid(), item.getServico(), item.getQuantidade());
 		}
 		
 		ModelAndView mv = nova(venda);
@@ -220,10 +224,10 @@ public class VendasController {
 	}
 	
 	private void validarVenda(Venda venda, BindingResult result) {
-		//venda.adicionarItens(tabelaItens.getItens(venda.getUuid()));
+		venda.adicionarItens(tabelaItens.getItens(venda.getUuid()));
 		venda.calcularValorTotal();
 		
-		//vendaValidator.validate(venda, result);
+		vendaValidator.validate(venda, result);
 	}
 	
 	private void setUuid(Venda venda) {

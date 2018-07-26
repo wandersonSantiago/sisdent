@@ -2,7 +2,7 @@ Brewer.TabelaItens = (function() {
 	
 	function TabelaItens(autocomplete) {
 		this.autocomplete = autocomplete;
-		this.tabelaProdutosContainer = $('.js-tabela-produtos-container');
+		this.tabelaServicosContainer = $('.js-tabela-servicos-container');
 		this.uuid = $('#uuid').val();
 		this.emitter = $({});
 		this.on = this.emitter.on.bind(this.emitter);
@@ -16,7 +16,7 @@ Brewer.TabelaItens = (function() {
 	}
 	
 	TabelaItens.prototype.valorTotal = function() {
-		return this.tabelaProdutosContainer.data('valor');
+		return this.tabelaServicosContainer.data('valor');
 	}
 	
 	function onItemSelecionado(evento, item) {
@@ -24,7 +24,7 @@ Brewer.TabelaItens = (function() {
 			url: 'item',
 			method: 'POST',
 			data: {
-				codigoProduto: item.codigo,
+				codigoServico: item.codigo,
 				uuid: this.uuid
 			}
 		});
@@ -33,7 +33,7 @@ Brewer.TabelaItens = (function() {
 	}
 	
 	function onItemAtualizadoNoServidor(html) {
-		this.tabelaProdutosContainer.html(html);
+		this.tabelaServicosContainer.html(html);
 		
 		bindQuantidade.call(this);
 		
@@ -50,10 +50,10 @@ Brewer.TabelaItens = (function() {
 			quantidade = 1;
 		}
 		
-		var codigoProduto = input.data('codigo-produto');
+		var codigoServico = input.data('codigo-servico');
 		
 		var resposta = $.ajax({
-			url: 'item/' + codigoProduto,
+			url: 'item/' + codigoServico,
 			method: 'PUT',
 			data: {
 				quantidade: quantidade,
@@ -69,9 +69,9 @@ Brewer.TabelaItens = (function() {
 	}
 	
 	function onExclusaoItemClick(evento) {
-		var codigoProduto = $(evento.target).data('codigo-produto');
+		var codigoServico = $(evento.target).data('codigo-servico');
 		var resposta = $.ajax({
-			url: 'item/' + this.uuid + '/' + codigoProduto,
+			url: 'item/' + this.uuid + '/' + codigoServico,
 			method: 'DELETE'
 		});
 		
@@ -79,7 +79,7 @@ Brewer.TabelaItens = (function() {
 	}
 	
 	function bindQuantidade() {
-		var quantidadeItemInput = $('.js-tabela-produto-quantidade-item');
+		var quantidadeItemInput = $('.js-tabela-servico-quantidade-item');
 		quantidadeItemInput.on('change', onQuantidadeItemAlterado.bind(this));
 		quantidadeItemInput.maskNumber({ integer: true, thousands: '' });
 	}

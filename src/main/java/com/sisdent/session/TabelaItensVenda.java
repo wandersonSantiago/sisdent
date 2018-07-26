@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import com.sisdent.model.ItemVenda;
-import com.sisdent.model.Produto;
+import com.sisdent.model.Servico;
 
 class TabelaItensVenda {
 
@@ -25,8 +25,8 @@ class TabelaItensVenda {
 				.orElse(BigDecimal.ZERO);
 	}
 	
-	public void adicionarItem(Produto produto, Integer quantidade) {
-		Optional<ItemVenda> itemVendaOptional = buscarItemPorProduto(produto);
+	public void adicionarItem(Servico  servico, Integer quantidade) {
+		Optional<ItemVenda> itemVendaOptional = buscarItemPorServico(servico);
 		
 		ItemVenda itemVenda = null;
 		if (itemVendaOptional.isPresent()) {
@@ -34,21 +34,21 @@ class TabelaItensVenda {
 			itemVenda.setQuantidade(itemVenda.getQuantidade() + quantidade);
 		} else {
 			itemVenda = new ItemVenda();
-			itemVenda.setProduto(produto);
+			itemVenda.setServico(servico);
 			itemVenda.setQuantidade(quantidade);
-			itemVenda.setValorUnitario(produto.getValor());
+			itemVenda.setValorUnitario(servico.getValor());
 			itens.add(0, itemVenda);
 		}
 	}
 	
-	public void alterarQuantidadeItens(Produto produto, Integer quantidade) {
-		ItemVenda itemVenda = buscarItemPorProduto(produto).get();
+	public void alterarQuantidadeItens(Servico servico, Integer quantidade) {
+		ItemVenda itemVenda = buscarItemPorServico(servico).get();
 		itemVenda.setQuantidade(quantidade);
 	}
 	
-	public void excluirItem(Produto produto) {
+	public void excluirItem(Servico servico) {
 		int indice = IntStream.range(0, itens.size())
-				.filter(i -> itens.get(i).getProduto().equals(produto))
+				.filter(i -> itens.get(i).getServico().equals(servico))
 				.findAny().getAsInt();
 		itens.remove(indice);
 	}
@@ -61,9 +61,9 @@ class TabelaItensVenda {
 		return itens;
 	}
 	
-	private Optional<ItemVenda> buscarItemPorProduto(Produto produto) {
+	private Optional<ItemVenda> buscarItemPorServico(Servico servico) {
 		return itens.stream()
-				.filter(i -> i.getProduto().equals(produto))
+				.filter(i -> i.getServico().equals(servico))
 				.findAny();
 	}
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import com.sisdent.model.ItemVenda;
-import com.sisdent.model.Produto;
+import com.sisdent.model.Servico;
 
 @SessionScope
 @Component
@@ -16,20 +16,20 @@ public class TabelasItensSession {
 
 	private Set<TabelaItensVenda> tabelas = new HashSet<>();
 
-	public void adicionarItem(String uuid, Produto cerveja, int quantidade) {
+	public void adicionarItem(String uuid, Servico servico, int quantidade) {
 		TabelaItensVenda tabela = buscarTabelaPorUuid(uuid);
-		tabela.adicionarItem(cerveja, quantidade);
+		tabela.adicionarItem(servico, quantidade);
 		tabelas.add(tabela);
 	}
 
-	public void alterarQuantidadeItens(String uuid, Produto cerveja, Integer quantidade) {
+	public void alterarQuantidadeItens(String uuid, Servico servico, Integer quantidade) {
 		TabelaItensVenda tabela = buscarTabelaPorUuid(uuid);
-		tabela.alterarQuantidadeItens(cerveja, quantidade);
+		tabela.alterarQuantidadeItens(servico, quantidade);
 	}
 
-	public void excluirItem(String uuid, Produto cerveja) {
+	public void excluirItem(String uuid, Servico servico) {
 		TabelaItensVenda tabela = buscarTabelaPorUuid(uuid);
-		tabela.excluirItem(cerveja);
+		tabela.excluirItem(servico);
 	}
 
 	public List<ItemVenda> getItens(String uuid) {
