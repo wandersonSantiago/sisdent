@@ -31,11 +31,32 @@
 	</div>
 
 	<div class="container-fluid">
-		<form  th:object="${cliente}" >
-			<brewer:message/>			
-			<div class="row" align="center">
-				<div class="alert alert-info">Dados do Paciente</div>
-			</div>	
+		<form  th:object="${cliente}" >		
+					<div class="row" align="center">
+						<div class="alert alert-info">
+							<h3><label  th:text="*{nome}"></label></h3>
+						</div>
+					</div>	
+			<div class="row">
+				<div class="form-group  col-lg-12">
+					<ul class="nav nav-tabs  js-abas-venda">
+					  <li role="presentation" class="active"><a href="#dadosPaciente">Dados Paciente</a></li>
+					  <li role="presentation"><a href="#anaminese">Anaminese</a></li>
+					  <li role="presentation"><a href="#consultasAgendadas">Consultas Agendadas</a></li>
+					  <li role="presentation"><a href="#consultasRealizada">Consultas Relizadas</a></li>
+					  <li role="presentation"><a href="#consultasCanceladas">Consultas Canceladas</a></li>
+					  <li role="presentation"><a href="#financeiro">Financeiro</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="tab-content">
+			
+			
+			<!-- DADOS PACIENTE -->
+				<div class="tab-pane active" id="dadosPaciente">
+
+			
 			<div class="row">
 				<div class="col-sm-12">
 					<span><b>Nome:</b></span>
@@ -74,100 +95,233 @@
 					<span th:text="*{endereco.nomeCidadeSiglaEstado}"></span>	
 					
 				</div>							
-			</div>		<br>
-			<div class="row" align="center">
-				<div class="alert alert-info">Anaminese</div>
-			</div>	
-			
-			<div th:if="${anaminese} != null" th:object="${anaminese}">
-			<div class="row">
-				<div class="col-sm-2">
-						<span><b>Fumante:</b></span>
-						<span th:text="*{fumante} == true ? 'Sim' : 'Não'"></span>
-				</div>	
-				<div class="col-sm-2">
-						<span><b>Pratica Exercicio:</b></span>
-						<span th:text="*{praticaExercicio} == true ? 'Sim' : 'Não'"></span>
-				</div>				
-			</div>
-			<br>
-			<div class="row">
-				<div class="col-sm-2">
-						<span><b>Doença Hereditaria:</b></span>
-						<span th:text="*{doencaHereditaria} == true ? 'Sim' : 'Não'"></span>
-				</div>	
-				<div class="col-sm-10">
-						<span th:if="*{descricaoDoenca} != ''"><b>Descrição:</b></span>
-						<span th:text="*{descricaoDoenca}"></span>
-				</div>				
-			</div>
-			<br>
-			<div class="row">
-				<div class="col-sm-2">
-						<span><b>Operação Recente:</b></span>
-						<span th:text="*{operacaoRecente} == true ? 'Sim' : 'Não'"></span>
-				</div>	
-				<div class="col-sm-10">
-						<span th:if="*{descricaoOperacaoRecente} != ''"><b>Descrição:</b></span>
-						<span th:text="*{descricaoOperacaoRecente}"></span>
-				</div>				
-			</div>
-			<br>
-			<div class="row">
-				<div class="col-sm-2">
-						<span><b>Medicação Continua:</b></span>
-						<span th:text="*{medicacaoContinua} == true ? 'Sim' : 'Não'"></span>
-				</div>	
-				<div class="col-sm-10">
-						<span th:if="*{descricaoMedicacaoContinua} != ''"><b>Descrição:</b></span>
-						<span th:text="*{descricaoMedicacaoContinua}"></span>
-				</div>				
-			</div>
-			<br>
-			<div class="row">
-				<div class="col-sm-2">
-						<span><b>Alergia:</b></span>
-						<span th:text="*{alergia} == true ? 'Sim' : 'Não'"></span>
-				</div>	
-				<div class="col-sm-10">
-						<span th:if="*{descricaoAlergia} != ''"><b>Descrição:</b></span>
-						<span th:text="*{descricaoAlergia}"></span>
-				</div>				
-			</div>
-			<br>
-			<div class="row">
-				<div class="col-sm-2">
-						<span><b>DST:</b></span>
-						<span th:text="*{dst} == true ? 'Sim' : 'Não'"></span>
-				</div>	
-				<div class="col-sm-10">
-						<span th:if="*{descricaoDst} != ''"><b>Descrição:</b></span>
-						<span th:text="*{descricaoDst}"></span>
-				</div>				
-			</div>
-			<br>
-			<div class="row">
-				<div class="col-sm-12">
-						<span th:if="*{observacao} != ''"><b>Observação:</b></span>
-						<span th:text="*{observacao}"></span>
-				</div>								
-			</div>			
-		</div>	
-		<div class="row" align="center">
-				<div class="alert alert-info">Consultas</div>
-			</div>
-			<div th:each="agenda : ${agendas}">								
-				<div class="panel panel-primary col-sm-3">				
-				  <div class="panel-body" align="center">
-				  <label>Dentista:</label>
-				   	<label th:text="${agenda.usuario.nome}"></label><br>
-				   	<label>Data:</label>
-				   	<label th:text="${agenda.data}"></label>
-				   	<label th:text="${agenda.horario}"></label>
-				   	<div th:class="${agenda.status.descricao	} == 'Cancelada'? 'red' : 'blue'"  th:text="${agenda.status}"></div>
-				  </div>
-				</div>
 			</div>				
+					
+
+     			</div>
+				
+				
+				<!-- ANAMINESE -->
+				<div class="tab-pane" id="anaminese">
+							
+						<div th:if="${anaminese} != null" th:object="${anaminese}">
+						<div class="row">
+							<div class="col-sm-2">
+									<span><b>Fumante:</b></span>
+									<span th:text="*{fumante} == true ? 'Sim' : 'Não'"></span>
+							</div>	
+							<div class="col-sm-2">
+									<span><b>Pratica Exercicio:</b></span>
+									<span th:text="*{praticaExercicio} == true ? 'Sim' : 'Não'"></span>
+							</div>				
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-2">
+									<span><b>Doença Hereditaria:</b></span>
+									<span th:text="*{doencaHereditaria} == true ? 'Sim' : 'Não'"></span>
+							</div>	
+							<div class="col-sm-10">
+									<span th:if="*{descricaoDoenca} != ''"><b>Descrição:</b></span>
+									<span th:text="*{descricaoDoenca}"></span>
+							</div>				
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-2">
+									<span><b>Operação Recente:</b></span>
+									<span th:text="*{operacaoRecente} == true ? 'Sim' : 'Não'"></span>
+							</div>	
+							<div class="col-sm-10">
+									<span th:if="*{descricaoOperacaoRecente} != ''"><b>Descrição:</b></span>
+									<span th:text="*{descricaoOperacaoRecente}"></span>
+							</div>				
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-2">
+									<span><b>Medicação Continua:</b></span>
+									<span th:text="*{medicacaoContinua} == true ? 'Sim' : 'Não'"></span>
+							</div>	
+							<div class="col-sm-10">
+									<span th:if="*{descricaoMedicacaoContinua} != ''"><b>Descrição:</b></span>
+									<span th:text="*{descricaoMedicacaoContinua}"></span>
+							</div>				
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-2">
+									<span><b>Alergia:</b></span>
+									<span th:text="*{alergia} == true ? 'Sim' : 'Não'"></span>
+							</div>	
+							<div class="col-sm-10">
+									<span th:if="*{descricaoAlergia} != ''"><b>Descrição:</b></span>
+									<span th:text="*{descricaoAlergia}"></span>
+							</div>				
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-2">
+									<span><b>DST:</b></span>
+									<span th:text="*{dst} == true ? 'Sim' : 'Não'"></span>
+							</div>	
+							<div class="col-sm-10">
+									<span th:if="*{descricaoDst} != ''"><b>Descrição:</b></span>
+									<span th:text="*{descricaoDst}"></span>
+							</div>				
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-12">
+									<span th:if="*{observacao} != ''"><b>Observação:</b></span>
+									<span th:text="*{observacao}"></span>
+							</div>								
+						</div>			
+					</div>	
+				</div>
+				<!-- CONSULTAS AGENDADAS-->
+				<div class="tab-pane" id="consultasAgendadas">	
+						
+					<div th:each="agenda : ${consultasAgendadas}">								
+						<div class="panel panel-primary col-sm-3">				
+						  <div class="panel-body" align="center">
+						  <label>Dentista:</label>
+						   	<label th:text="${agenda.usuario.nome}"></label><br>
+						   	<label>Data:</label>
+						   	<label th:text="${agenda.data}"></label>
+						   	<label th:text="${agenda.horario}"></label>
+						   	<div th:class="${agenda.status.descricao	} == 'Cancelada'? 'red' : 'blue'"  th:text="${agenda.status}"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<!-- CONSULTAS REALIZADAS-->
+				<div class="tab-pane" id="consultasRealizada">	
+						
+					<div th:each="agenda : ${consultaRealizada}">								
+						<div class="panel panel-primary col-sm-3">				
+						  <div class="panel-body" align="center">
+						  <label>Dentista:</label>
+						   	<label th:text="${agenda.usuario.nome}"></label><br>
+						   	<label>Data:</label>
+						   	<label th:text="${agenda.data}"></label>
+						   	<label th:text="${agenda.horario}"></label>
+						   	<div th:class="${agenda.status.descricao	} == 'Cancelada'? 'red' : 'blue'"  th:text="${agenda.status}"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<!-- CONSULTAS CANCELADAS -->
+				<div class="tab-pane" id="consultasCanceladas">	
+						
+					<div th:each="agenda : ${consultasCanceladas}">								
+						<div class="panel panel-primary col-sm-3">				
+						  <div class="panel-body" align="center">
+						  <label>Dentista:</label>
+						   	<label th:text="${agenda.usuario.nome}"></label><br>
+						   	<label>Data:</label>
+						   	<label th:text="${agenda.data}"></label>
+						   	<label th:text="${agenda.horario}"></label>
+						   	<div th:class="${agenda.status.descricao	} == 'Cancelada'? 'red' : 'blue'"  th:text="${agenda.status}"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="financeiro">
+					<div th:each="orcamento : ${orcamentos}">								
+						<div class="panel panel-primary col-sm-12">				
+						  <div class="panel-body" >
+						  <div class="row">
+							  <div class="col-md-3">
+								  	<h4>Dentista:
+								   	<i th:text="${orcamento.usuario.nome}"></i></h4>
+							  </div>
+							  <div class="col-md-2">
+								   <h4>	Data:
+								   	<i th:text="${orcamento.dataCriacao}"></i></h4>
+							   </div>
+							   <div class="col-md-2">
+								    <h4>Status:
+								   	<i th:class="${orcamento.status.descricao	} == 'Cancelada'? 'red' : 'blue'"  th:text="${orcamento.status}"></i></h4>							
+							   	</div>							   	 
+							   	 <div class="col-md-4" >
+								    <h4>Status Pagamento:
+								    <i th:class="${orcamento.statusPagamento.descricao} == 'Pago'? 'blue' : 'red'"  th:text="${orcamento.statusPagamento}"></i>&nbsp;&nbsp;<i 
+								    th:if="${orcamento.statusPagamento.descricao} == 'Parcelado'" th:class="${orcamento.parcelasPaga} ? 'blue' : 'red'" th:text="${orcamento.parcelasPaga}? 'Pago':'Pendete'"></i>						   	
+								   	 </h4>							
+							   	</div>
+						   	</div>
+						   	
+						   	<h3>Serviços</h3>
+						   	<hr>							
+							<div th:each="iten : ${orcamento.itens}">
+								<div class="row">
+									<div class="col-md-2">
+										<h4>Código:
+						   				<i th:text="${iten.servico.codigoBarras}"></i></h4>
+									</div>
+									<div class="col-md-4">
+										<h4>Nome:
+						   				<i th:text="${iten.servico.nome}"></i></h4>
+									</div>
+									<div class="col-md-2">
+										<h4>Quantidade:
+						   				<i th:text="${iten.quantidade}"></i></h4>
+									</div>
+									<div class="col-md-2">
+										<h4>Valor:
+						   				<i th:text="${iten.valorUnitario}"></i></h4>
+									</div>
+									<div class="col-md-2">
+										<h4>Valor total:
+						   				<i cl th:text="${iten.valorTotal}"></i></h4>
+									</div>
+								</div>								 
+							</div>
+							<hr>
+							<h3  th:if="${orcamento.statusPagamento.descricao} == 'Parcelado'">Boletos</h3>
+						   	<hr  th:if="${orcamento.statusPagamento.descricao} == 'Parcelado'">							
+							<div  th:if="${orcamento.statusPagamento.descricao} == 'Parcelado'" th:each="iten : ${orcamento.parcelas}">
+								<div class="row">
+									<div class="col-md-2">
+										<h4>Numero:
+						   				<i th:text="${iten.numero}"></i></h4>
+									</div>
+									<div class="col-md-4">
+										<h4>Data vencimento:
+						   				<i th:text="${iten.dataVencimento}"></i></h4>
+									</div>
+									<div class="col-md-2">
+										<h4>Valor:
+						   				<i th:text="${iten.valor}"></i></h4>
+									</div>
+									<div class="col-md-2">
+										<h4>Pago:
+						   				<i th:class="${iten.pago} ? 'blue' : 'red'" th:text="${iten.pago}? 'Pago':'Pendete'"></i></h4>
+									</div>									
+								</div>								 
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-md-4">
+									<h4>Valor Adicional:
+								   	<label th:text="${orcamento.valorFrete}"></label></h4>
+							   	</div>
+							   	<div class="col-md-4">
+								  <h4>Valor desconto:
+								   	<label th:text="${orcamento.valorDesconto}"></label></h4> 
+								 </div>
+								 <div class="col-md-4">
+								  <h4>Valor Total:
+								   	<label th:text="${orcamento.valorTotal}"></label></h4>
+							   	</div>
+						   	</div>
+						  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+							
 		</form>
 	</div>
 </section>
@@ -175,6 +329,14 @@
 <th:block layout:fragment="javascript-extra">
 	<script th:src="@{/javascripts/cliente.mascara-cpf-cnpj.js}"></script>
 	<script th:src="@{/javascripts/cliente.combo-estado-cidade.js}"></script>
+	<script>
+	$(function() {
+		$('.js-abas-venda a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+	});
+	</script>
 </th:block>
 
 </html>

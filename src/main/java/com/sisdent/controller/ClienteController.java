@@ -28,11 +28,14 @@ import com.sisdent.model.Agenda;
 import com.sisdent.model.Anaminese;
 import com.sisdent.model.Cliente;
 import com.sisdent.model.StatusAgenda;
+import com.sisdent.model.StatusVenda;
 import com.sisdent.model.TipoPessoa;
+import com.sisdent.model.Venda;
 import com.sisdent.repository.Agendas;
 import com.sisdent.repository.Anamineses;
 import com.sisdent.repository.Clientes;
 import com.sisdent.repository.Estados;
+import com.sisdent.repository.Vendas;
 import com.sisdent.repository.filter.ClienteFilter;
 import com.sisdent.service.ClienteService;
 import com.sisdent.service.exception.CpfCnpjClienteJaCadastradoException;
@@ -55,6 +58,9 @@ public class ClienteController {
 	
 	@Autowired
 	private Agendas agendasRepository;
+	
+	@Autowired
+	private Vendas vendasRepository;
 	
 	
 	@RequestMapping("/novo")
@@ -135,16 +141,22 @@ public class ClienteController {
 	@GetMapping("/show/{codigo}")
 	public ModelAndView show(@PathVariable Long codigo) {
 		Cliente cliente = clienteService.findOne(codigo);
-		List<Agenda> agendas = agendasRepository.findByClienteAndStatus(cliente, StatusAgenda.REALIZADA);
+		List<Agenda> consultaRealizada = agendasRepository.findByClienteAndStatus(cliente, StatusAgenda.REALIZADA);
+		List<Agenda> consultasAgendadas = agendasRepository.findByClienteAndStatus(cliente, StatusAgenda.PENDENTE);
+		List<Agenda> consultasCanceladas = agendasRepository.findByClienteAndStatus(cliente, StatusAgenda.CANCELADA);
+		
+		List<Venda> orcamentos = vendasRepository.findByClienteAndStatus(cliente, StatusVenda.EMITIDA);
+		
 		Anaminese anaminese = anamineseRepository.findByCliente(cliente);
 		ModelAndView mv = new ModelAndView("cliente/cliente.show");
 		mv.addObject(cliente);
 		if(anaminese != null) {
 			mv.addObject(anaminese);
-		}	
-		if(agendas != null) {
-			mv.addObject("agendas",agendas);
 		}
+		mv.addObject("orcamentos" , orcamentos);
+		mv.addObject("consultaRealizada",consultaRealizada);
+		mv.addObject("consultasAgendadas",consultasAgendadas);
+		mv.addObject("consultasCanceladas",consultasCanceladas);
 		return mv;
 	}
 	private void validarTamanhoNome(String nome) {

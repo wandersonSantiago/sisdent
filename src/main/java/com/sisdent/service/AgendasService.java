@@ -55,5 +55,9 @@ public class AgendasService {
 	public List<Agenda> buscarSomenteDoDia() {
 		return agendas.findByDataLessThanEqualAndDataGreaterThanEqual(LocalDate.now(),LocalDate.now());
 	}
+
+	public List<Agenda> buscarSomenteDoDiaPorCliente(Cliente cliente) {
+		return agendas.findByClienteAndDataLessThanEqualAndDataGreaterThanEqual(cliente,LocalDate.now(),LocalDate.now());
+	}
 	
 }

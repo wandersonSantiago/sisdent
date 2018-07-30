@@ -4,6 +4,8 @@ package com.sisdent.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -34,6 +36,9 @@ public class Parcela implements Serializable {
     @NotNull
     @Column(name = "valor", nullable = false, precision = 16, scale = 2)
     private BigDecimal valor;
+    
+    @Column(name = "data_vencimento")
+	private LocalDate dataVencimento;
     
     @Basic(optional = false)
     @NotNull
@@ -85,6 +90,15 @@ public class Parcela implements Serializable {
 	public void setOrcamento(Venda orcamento) {
 		this.orcamento = orcamento;
 	}
+	
+
+	public LocalDate getDataVencimento() {
+		return dataVencimento;
+	}
+
+	public void setDataVencimento(LocalDate localDate) {
+		this.dataVencimento = localDate;
+	}
 
 	@Override
 	public int hashCode() {
@@ -110,6 +124,5 @@ public class Parcela implements Serializable {
 			return false;
 		return true;
 	}
-
 
 }

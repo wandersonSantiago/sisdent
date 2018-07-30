@@ -35,7 +35,7 @@ public class VendaValidator implements Validator {
 
 	private void validarSeInformouItens(Errors errors, Venda venda) {
 		if (venda.getItens().isEmpty()) {
-			errors.reject("", "Adicione pelo menos uma produto na venda");
+			errors.reject("", "Adicione pelo menos um serviço no orçamento");
 		}
 	}
 

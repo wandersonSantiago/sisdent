@@ -26,8 +26,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.lang.NonNull;
-
 @Entity
 @Table(name = "venda")
 public class Venda implements Serializable {
@@ -51,7 +49,13 @@ public class Venda implements Serializable {
 
 	@Column(name = "valor_total")
 	private BigDecimal valorTotal = BigDecimal.ZERO;
+	
+	@Column(name = "valor_entrada")
+	private BigDecimal valorEntrada = BigDecimal.ZERO;
 
+	@Column(name = "qtd_parcelas")
+	private int qtdParcelas;
+	
 	@NotBlank(message = "A observação é obrigatória")
 	private String observacao;
 
@@ -69,6 +73,9 @@ public class Venda implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	private StatusVenda status = StatusVenda.ORCAMENTO;
+	
+	@Enumerated(EnumType.STRING)
+	private StatusPagamento statusPagamento = StatusPagamento.PENDENTE;
 
 	@OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemVenda> itens = new ArrayList<>();
@@ -86,10 +93,26 @@ public class Venda implements Serializable {
 	@Transient
 	private LocalTime horarioEntrega;
 
+	public boolean isParcelasPaga() {
+		if(parcelas.size() > 0) {
+			for(Parcela parcela : parcelas) {
+				if(!parcela.isPago()) {
+					return false;
+				}				
+			}
+		}
+		return true;
+	}
+	public int getQuantidadeParcelas() {
+		return parcelas.size();
+	}
 	public Long getCodigo() {
 		return codigo;
 	}
 
+	public void addParcela(Parcela parcela) {
+		parcelas.add(parcela);
+	}
 	public void setCodigo(Long codigo) {
 		this.codigo = codigo;
 	}
@@ -119,8 +142,6 @@ public class Venda implements Serializable {
 	}
 
 	public BigDecimal getValorTotal() {
-		BigDecimal valorTotal = Optional.ofNullable(valorFrete).orElse(BigDecimal.ZERO)
-				.subtract(Optional.ofNullable(valorDesconto).orElse(BigDecimal.ZERO));
 		return valorTotal;
 	}
 
@@ -217,7 +238,7 @@ public class Venda implements Serializable {
 	}
 	
 	public void calcularValorTotal() {
-		this.valorTotal = calcularValorTotal(getValorFrete(), getValorDesconto());
+		this.valorTotal = calcularValorTotal(getValorFrete(), getValorDesconto(), getValorTotalItens());
 	}
 	
 	public Long getDiasCriacao() {
@@ -233,12 +254,44 @@ public class Venda implements Serializable {
 		return !isSalvarPermitido();
 	}
 	
-	private BigDecimal calcularValorTotal(BigDecimal valorFrete, BigDecimal valorDesconto) {
-		BigDecimal valorTotal = valorFrete
+	
+	public StatusPagamento getStatusPagamento() {
+		return statusPagamento;
+	}
+
+	public void setStatusPagamento(StatusPagamento statusPagamento) {
+		this.statusPagamento = statusPagamento;
+	}
+
+	public List<Parcela> getParcelas() {
+		return parcelas;
+	}
+
+	public void setParcelas(List<Parcela> parcelas) {
+		this.parcelas = parcelas;
+	}
+
+	private BigDecimal calcularValorTotal(BigDecimal valorFrete, BigDecimal valorDesconto, BigDecimal valorTotalItens) {
+		BigDecimal valorTotal = valorTotalItens
+				.add(Optional.ofNullable(valorFrete).orElse(BigDecimal.ZERO))
 				.subtract(Optional.ofNullable(valorDesconto).orElse(BigDecimal.ZERO));
 		return valorTotal;
 	}
 
+	
+	public BigDecimal getValorEntrada() {
+		return valorEntrada;
+	}
+	public void setValorEntrada(BigDecimal valorEntrada) {
+		this.valorEntrada = valorEntrada;
+	}
+	
+	public int getQtdParcelas() {
+		return qtdParcelas;
+	}
+	public void setQtdParcelas(int qtdParcelas) {
+		this.qtdParcelas = qtdParcelas;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

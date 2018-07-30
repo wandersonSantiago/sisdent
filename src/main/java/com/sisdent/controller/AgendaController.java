@@ -135,6 +135,18 @@ public class AgendaController {
 		return mv;
 	}
 	
+	@GetMapping( "/cliente/{codigo}" )
+	public ModelAndView pesquisarCliente(@PathVariable("codigo") Long codigo
+			, @PageableDefault(size = 24) Pageable pageable, HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("agenda/agenda.form");
+		
+		Agenda agenda = new Agenda();		
+		Cliente cliente = clienteService.findOne(codigo);		
+		agenda.setCliente(cliente);
+		mv.addObject(agenda);
+		return mv;
+	}
+	
 	@DeleteMapping("/{codigo}")
 	public @ResponseBody ResponseEntity<?> excluir(@PathVariable("codigo") Agenda agenda) {
 		try {

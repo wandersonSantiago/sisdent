@@ -91,7 +91,7 @@
 	            	<tr>
 	                	<th>Código</th>
 	                	<th>
-	                		<brewer:order page="${pagina}" field="c.nome" text="Cliente"/>
+	                		<brewer:order page="${pagina}" field="c.nome" text="Paciente"/>
 	                	</th>
 	                	<th>Data de criação</th>
 	                	<th>Valor total</th>
@@ -108,7 +108,7 @@
 		   							th:href="@{/vendas/{codigo}(codigo=${venda.codigo})}">
 		   					</a>
 						</td>
-						<td th:text="${venda.cliente.nome}"></td>
+						<td title="Click para visualizar as informações do paciente" ><a  th:href="@{/clientes/show/{codigo}(codigo=${venda.cliente.codigo})}" th:text="${venda.cliente.nome}"></a></td>						
 						<td th:text="${{venda.dataCriacao}}"></td>
 						<td th:text="|R$ ${{venda.valorTotal}}|"></td>
 						<td th:text="${venda.usuario.nome}"></td>

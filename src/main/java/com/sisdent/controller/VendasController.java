@@ -32,6 +32,7 @@ import com.algaworks.brewer.dto.VendaMes;
 import com.algaworks.brewer.dto.VendaOrigem;
 import com.sisdent.controller.page.PageWrapper;
 import com.sisdent.controller.validator.VendaValidator;
+import com.sisdent.model.Cliente;
 import com.sisdent.model.ItemVenda;
 import com.sisdent.model.Servico;
 import com.sisdent.model.StatusVenda;
@@ -42,6 +43,7 @@ import com.sisdent.repository.Vendas;
 import com.sisdent.repository.filter.VendaFilter;
 import com.sisdent.security.UsuarioSistema;
 import com.sisdent.service.CadastroVendaService;
+import com.sisdent.service.ClienteService;
 import com.sisdent.service.RelatorioService;
 import com.sisdent.service.RelatorioUtil;
 import com.sisdent.session.TabelasItensSession;
@@ -64,6 +66,9 @@ public class VendasController {
 	
 	@Autowired
 	private VendaValidator vendaValidator;
+	
+	@Autowired
+	private ClienteService clienteService;
 	
 	@Autowired
 	private Vendas vendas;
@@ -177,6 +182,18 @@ public class VendasController {
 		return mv;
 	}
 	
+	@GetMapping( "/cliente/{codigo}" )
+	public ModelAndView pesquisarCliente(@PathVariable("codigo") Long codigo
+			, @PageableDefault(size = 24) Pageable pageable, HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("venda/CadastroVenda");
+		
+		Venda venda = new Venda();		
+		Cliente cliente = clienteService.findOne(codigo);		
+		venda.setCliente(cliente);
+		mv.addObject(venda);
+		return mv;
+	}
+	
 	@GetMapping("/{codigo}")
 	public ModelAndView editar(@PathVariable Long codigo) {
 		Venda venda = vendas.buscarComItens(codigo);
@@ -187,6 +204,7 @@ public class VendasController {
 		}
 		
 		ModelAndView mv = nova(venda);
+		
 		mv.addObject(venda);
 		return mv;
 	}

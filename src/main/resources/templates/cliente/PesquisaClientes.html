@@ -63,6 +63,7 @@
 						<th class="table-col-acoes"></th>
 						<th class="table-col-acoes"></th>
 						<th class="table-col-acoes"></th>
+						<th class="table-col-acoes"></th>
 					</tr>
 				</thead>
 				
@@ -80,9 +81,14 @@
 						 </td>
 						 <td class="text-center">
 							<a class="btn  btn-primary btn-sign btn-block " title="Cadastrar Anaminese"  type="button"
-									th:href="@{/anamineses/{codigo}(codigo=${cliente.codigo})}">Agendamento 							
+									th:href="@{/agendas/cliente/{codigo}(codigo=${cliente.codigo})}">Agendamento 							
 							</a>
 						 </td>
+						<!--  <td class="text-center">
+							<a class="btn  btn-info btn-sign btn-block " title="Cadastrar Orçamento"  type="button"
+									th:href="@{/vendas/cliente/{codigo}(codigo=${cliente.codigo})}">Orçamento 							
+							</a>
+						 </td> -->
 						<td class="text-center">						
 							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
 									th:href="@{/clientes/{codigo}(codigo=${cliente.codigo})}"> 

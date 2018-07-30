@@ -20,6 +20,9 @@ public interface Agendas extends JpaRepository<Agenda, Long> , AgendasQueries{
 
 	List<Agenda> findByDataLessThanEqualAndDataGreaterThanEqual(LocalDate now, LocalDate now2);
 
+	List<Agenda> findByClienteAndDataLessThanEqualAndDataGreaterThanEqual(Cliente cliente, LocalDate now,
+			LocalDate now2);
+
 
 
 
