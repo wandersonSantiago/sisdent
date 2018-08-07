@@ -21,7 +21,7 @@ import com.sisdent.storage.FotoStorage;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.name.Rename;
 
-@Profile("!prod")
+@Profile("prod")
 @Component
 public class FotoStorageLocal implements FotoStorage {
 
