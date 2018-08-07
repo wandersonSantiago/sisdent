@@ -2,13 +2,8 @@ package com.sisdent.service;
 
 
 
-import java.io.InputStream;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -17,15 +12,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.brewer.dto.LancamentoEstatisticaPessoa;
 import com.sisdent.model.Lancamento;
+import com.sisdent.model.Parcela;
 import com.sisdent.repository.LancamentoRepository;
-
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import com.sisdent.repository.ParcelaRepository;
 
 @Service
 public class LancamentoService {
@@ -37,6 +29,8 @@ public class LancamentoService {
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
 	
+	@Autowired
+	private ParcelaRepository parcelaRepository;
 
 	
 	@Scheduled(cron = "0 0 6 * * *")
@@ -60,7 +54,7 @@ public class LancamentoService {
 	
 	}
 	
-	public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws Exception {
+	/*public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws Exception {
 		List<LancamentoEstatisticaPessoa> dados = lancamentoRepository.porPessoa(inicio, fim);
 		
 		Map<String, Object> parametros = new HashMap<>();
@@ -75,7 +69,7 @@ public class LancamentoService {
 				new JRBeanCollectionDataSource(dados));
 		
 		return JasperExportManager.exportReportToPdf(jasperPrint);
-	}
+	}*/
 
 	public Lancamento salvar(Lancamento lancamento) {		
 
@@ -88,6 +82,12 @@ public class LancamentoService {
 		
 		BeanUtils.copyProperties(lancamento, lancamentoSalvo, "codigo");
 
+		Parcela parcela = parcelaRepository.findByLancamento(lancamento);
+		if(parcela != null && lancamento.getDataPagamento() != null) {
+			parcela.setDataPagamento(lancamento.getDataPagamento());
+			parcela.setPago(true);
+		}
+		
 		return lancamentoRepository.save(lancamentoSalvo);
 	}
 
@@ -100,8 +100,9 @@ public class LancamentoService {
 		return lancamentoSalvo.get();
 	}
 
+	@Transactional
 	public void excluir(Lancamento lancamento) {
-		
+		lancamentoRepository.delete(lancamento);
 	}
 
 }

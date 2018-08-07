@@ -163,12 +163,12 @@
 			<div class="row" style="clear: both" th:if="${venda.salvarPermitido}">
 				<div class="col-lg-12">
 					<div class="btn-group">
-					  <button type="submit" class="btn  btn-primary  js-submit-btn" data:acao="salvar">Salvar</button>
-					  <button type="button" class="btn  btn-primary  dropdown-toggle" data-toggle="dropdown">
+					   <button th:if="${venda.nova}" type="submit" class="btn  btn-primary  js-submit-btn" data:acao="salvar">Salvar</button>
+					   <button th:unless="${venda.nova}" type="submit" class="btn  btn-primary  js-submit-btn" data:acao="emitir">Emitir</button>
+					   <button  type="button" class="btn  btn-primary  dropdown-toggle" data-toggle="dropdown">
 					    <span class="caret"></span>
 					  </button>					  
 					  <ul class="dropdown-menu">
-					    	<li th:unless="${venda.nova}"><a href="#" class="js-submit-btn" data:acao="emitir">Emitir</a></li>
 					      	<li th:if="${venda.nova}" ><a href="#" class="js-submit-btn" data:acao="imprimir">Salvar orçamento e imprimir</a></li>
 					    	<li th:unless="${venda.nova}" ><a href="#" class="js-submit-btn" data:acao="enviarImprimir">Imprimir</a></li>
 					  </ul>

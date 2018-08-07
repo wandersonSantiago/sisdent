@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.algaworks.brewer.dto.ServicoDTO;
 import com.sisdent.controller.page.PageWrapper;
 import com.sisdent.model.Servico;
+import com.sisdent.model.TipoCategoria;
 import com.sisdent.repository.Categorias;
 import com.sisdent.repository.Servicos;
 import com.sisdent.repository.filter.ServicoFilter;
@@ -47,7 +48,7 @@ public class ServicoController {
 	@RequestMapping("/novo")
 	public ModelAndView nova(Servico servico) {
 		ModelAndView mv = new ModelAndView("servico/servico.form");
-		mv.addObject("categorias", categorias.findAll());
+		mv.addObject("categorias", categorias.findByTipo(TipoCategoria.SERVICO));
 		return mv;
 	}
 	
@@ -66,7 +67,7 @@ public class ServicoController {
 	public ModelAndView pesquisar(ServicoFilter servicoFilter, BindingResult result
 			, @PageableDefault(size = 24) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("servico/servico.list");
-		mv.addObject("categorias", categorias.findAll());
+		mv.addObject("categorias", categorias.findByTipo(TipoCategoria.SERVICO));
 		
 		PageWrapper<Servico> paginaWrapper = new PageWrapper<>(servicos.filtrar(servicoFilter, pageable)
 				, httpServletRequest);

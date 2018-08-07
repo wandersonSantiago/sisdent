@@ -2,204 +2,163 @@ package com.sisdent.repository.helper.lancamento;
 
 
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.algaworks.brewer.dto.LancamentoEstatisticaCategoria;
-import com.algaworks.brewer.dto.LancamentoEstatisticaDia;
-import com.algaworks.brewer.dto.LancamentoEstatisticaPessoa;
-import com.sisdent.model.Categoria_;
 import com.sisdent.model.Lancamento;
-import com.sisdent.model.Lancamento_;
+import com.sisdent.model.TipoLancamento;
 import com.sisdent.repository.filter.LancamentoFilter;
 import com.sisdent.repository.filter.ResumoLancamento;
+import com.sisdent.repository.paginacao.PaginacaoUtil;
 
 public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@PersistenceContext
 	private EntityManager manager;
 	
-	@Override
-	public List<LancamentoEstatisticaPessoa> porPessoa(LocalDate inicio, LocalDate fim) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
-		
-		CriteriaQuery<LancamentoEstatisticaPessoa> criteriaQuery = criteriaBuilder.
-				createQuery(LancamentoEstatisticaPessoa.class);
-		
-		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
-		
-		criteriaQuery.select(criteriaBuilder.construct(LancamentoEstatisticaPessoa.class, 
-				root.get(Lancamento_.tipo),
-				criteriaBuilder.sum(root.get(Lancamento_.valor))));
-		
-		criteriaQuery.where(
-				criteriaBuilder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), 
-						inicio),
-				criteriaBuilder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), 
-						fim));
-		
-		criteriaQuery.groupBy(root.get(Lancamento_.tipo));
-		
-		TypedQuery<LancamentoEstatisticaPessoa> typedQuery = manager
-				.createQuery(criteriaQuery);
-		
-		return typedQuery.getResultList();
-	}
-	
-	@Override
-	public List<LancamentoEstatisticaDia> porDia(LocalDate mesReferencia) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
-		
-		CriteriaQuery<LancamentoEstatisticaDia> criteriaQuery = criteriaBuilder.
-				createQuery(LancamentoEstatisticaDia.class);
-		
-		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
-		
-		criteriaQuery.select(criteriaBuilder.construct(LancamentoEstatisticaDia.class, 
-				root.get(Lancamento_.tipo),
-				root.get(Lancamento_.dataVencimento),
-				criteriaBuilder.sum(root.get(Lancamento_.valor))));
-		
-		LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
-		LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth());
-		
-		criteriaQuery.where(
-				criteriaBuilder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), 
-						primeiroDia),
-				criteriaBuilder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), 
-						ultimoDia));
-		
-		criteriaQuery.groupBy(root.get(Lancamento_.tipo), 
-				root.get(Lancamento_.dataVencimento));
-		
-		TypedQuery<LancamentoEstatisticaDia> typedQuery = manager
-				.createQuery(criteriaQuery);
-		
-		return typedQuery.getResultList();
-	}
-	
-	@Override
-	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate mesReferencia) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
-		
-		CriteriaQuery<LancamentoEstatisticaCategoria> criteriaQuery = criteriaBuilder.
-				createQuery(LancamentoEstatisticaCategoria.class);
-		
-		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
-		
-		criteriaQuery.select(criteriaBuilder.construct(LancamentoEstatisticaCategoria.class, 
-				root.get(Lancamento_.categoria),
-				criteriaBuilder.sum(root.get(Lancamento_.valor))));
-		
-		LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
-		LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth());
-		
-		criteriaQuery.where(
-				criteriaBuilder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), 
-						primeiroDia),
-				criteriaBuilder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), 
-						ultimoDia));
-		
-		criteriaQuery.groupBy(root.get(Lancamento_.categoria));
-		
-		TypedQuery<LancamentoEstatisticaCategoria> typedQuery = manager
-				.createQuery(criteriaQuery);
-		
-		return typedQuery.getResultList();
-	}
-	
-	@Override
-	public Page<Lancamento> filtrar(LancamentoFilter lancamentoFilter, Pageable pageable) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Lancamento> criteria = builder.createQuery(Lancamento.class);
-		Root<Lancamento> root = criteria.from(Lancamento.class);
-		
-		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
-		criteria.where(predicates);
-		
-		TypedQuery<Lancamento> query = manager.createQuery(criteria);
-		adicionarRestricoesDePaginacao(query, pageable);
-		
-		return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
-	}
-	
+	@Autowired
+	private PaginacaoUtil paginacaoUtil;
 
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<ResumoLancamento> criteria = builder.createQuery(ResumoLancamento.class);
-		Root<Lancamento> root = criteria.from(Lancamento.class);
-		
-		criteria.select(builder.construct(ResumoLancamento.class
-				, root.get(Lancamento_.codigo), root.get(Lancamento_.descricao)
-				, root.get(Lancamento_.dataVencimento), root.get(Lancamento_.dataPagamento)
-				, root.get(Lancamento_.valor), root.get(Lancamento_.tipo)
-				, root.get(Lancamento_.categoria).get(Categoria_.nome)));
-		
-		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
-		criteria.where(predicates);
-		
-		TypedQuery<ResumoLancamento> query = manager.createQuery(criteria);
-		adicionarRestricoesDePaginacao(query, pageable);
-		
-		return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
+	@Transactional(readOnly = true)
+	public Page<Lancamento> filtrar(LancamentoFilter filtro, Pageable pageable) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Lancamento.class);
+		criteria.addOrder(Order.desc("dataPagamento"));
+		criteria.add(Restrictions.isNotNull("dataPagamento"));
+		paginacaoUtil.preparar(criteria, pageable);
+		adicionarFiltro(filtro, criteria);
+		return new PageImpl<>(criteria.list(), pageable, total(filtro));
+	}
+	
+	@Override
+	public List<ResumoLancamento> porNome(String nome) {
+		String jpql = "select new com.algaworks.brewer.dto.ResumoLancamento(codigo, nome, descricao, valor) "
+				+ "from Lancamento where lower(nome) like lower(:nome)";
+		List<ResumoLancamento> produtoFiltrados = manager.createQuery(jpql, ResumoLancamento.class)
+					.setParameter("nome", nome + "%")
+					.getResultList();
+		return produtoFiltrados;
+	}
+	
+	private Long total(LancamentoFilter filtro) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Lancamento.class);
+		adicionarFiltro(filtro, criteria);
+		criteria.setProjection(Projections.rowCount());
+		return (Long) criteria.uniqueResult();
 	}
 
-	private Predicate[] criarRestricoes(LancamentoFilter lancamentoFilter, CriteriaBuilder builder,
-			Root<Lancamento> root) {
-		List<Predicate> predicates = new ArrayList<>();
+	private void adicionarFiltro(LancamentoFilter filtro, Criteria criteria) {
+		if (filtro != null) {
 		
-		if (!StringUtils.isEmpty(lancamentoFilter.getDescricao())) {
-			predicates.add(builder.like(
-					builder.lower(root.get(Lancamento_.descricao)), "%" + lancamentoFilter.getDescricao().toLowerCase() + "%"));
+			if (!StringUtils.isEmpty(filtro.getCodigo())) {
+				criteria.add(Restrictions.eq("codigo", filtro.getCodigo()));
+			}
+			if (!StringUtils.isEmpty(filtro.getDescricao())) {
+				criteria.add(Restrictions.ilike("descricao", filtro.getDescricao(), MatchMode.ANYWHERE));
+			}
+			if (!StringUtils.isEmpty(filtro.getTipo())) {
+				criteria.add(Restrictions.eq("tipo", filtro.getTipo()));
+			}
+			if (!StringUtils.isEmpty(filtro.getCategoria())) {
+				criteria.add(Restrictions.eq("categoria", filtro.getCategoria()));
+			}
+			if (filtro.getDataVencimentoDe()!= null) {
+				criteria.add(Restrictions.ge("dataVencimento", filtro.getDataVencimentoDe()));
+			}
+			if (filtro.getDataVencimentoAte() != null) {
+				criteria.add(Restrictions.le("dataVencimento", filtro.getDataVencimentoAte()));
+			}
+			if (filtro.getDataCadastroDe()!= null) {
+				criteria.add(Restrictions.ge("dataCadastro", filtro.getDataCadastroDe()));
+			}
+			if (filtro.getDataCadastroAte() != null) {
+				criteria.add(Restrictions.le("dataCadastro", filtro.getDataCadastroAte()));
+			}
+			if (filtro.getDataPagamentoDe()!= null) {
+				criteria.add(Restrictions.ge("dataPagamento", filtro.getDataPagamentoDe()));
+			}
+			if (filtro.getDataPagamentoAte() != null) {
+				criteria.add(Restrictions.le("dataPagamento", filtro.getDataPagamentoAte()));
+			}		
+			if (filtro.getValorMinimo() != null) {
+				criteria.add(Restrictions.le("valor", filtro.getValorMinimo()));
+			}
+			if (filtro.getDataVencimentoAte() != null) {
+				criteria.add(Restrictions.le("valor", filtro.getValorMaximo()));
+			}
 		}
-		
-		if (lancamentoFilter.getDataVencimentoDe() != null) {
-			predicates.add(
-					builder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), lancamentoFilter.getDataVencimentoDe()));
-		}
-		
-		if (lancamentoFilter.getDataVencimentoAte() != null) {
-			predicates.add(
-					builder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), lancamentoFilter.getDataVencimentoAte()));
-		}
-		
-		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 
-	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
-		int paginaAtual = pageable.getPageNumber();
-		int totalRegistrosPorPagina = pageable.getPageSize();
-		int primeiroRegistroDaPagina = paginaAtual * totalRegistrosPorPagina;
-		
-		query.setFirstResult(primeiroRegistroDaPagina);
-		query.setMaxResults(totalRegistrosPorPagina);
+	@Override
+	public BigDecimal totalContasAReceber() {
+		Optional<BigDecimal> optional = Optional.ofNullable(
+				manager.createQuery("select sum(valor) from Lancamento where dataPagamento IS NULL and tipo = :tipo", BigDecimal.class)
+					/*.setParameter("data", LocalDate.now())*/
+					.setParameter("tipo", TipoLancamento.RECEITA)
+					.getSingleResult());
+		return optional.orElse(BigDecimal.ZERO);
 	}
 	
-	private Long total(LancamentoFilter lancamentoFilter) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		Root<Lancamento> root = criteria.from(Lancamento.class);
-		
-		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
-		criteria.where(predicates);
-		
-		criteria.select(builder.count(root));
-		return manager.createQuery(criteria).getSingleResult();
+	@Override
+	public BigDecimal totalcontasAPagar() {
+		Optional<BigDecimal> optional = Optional.ofNullable(
+				manager.createQuery("select sum(valor) from Lancamento where dataPagamento IS NULL and tipo = :tipo", BigDecimal.class)
+					.setParameter("tipo", TipoLancamento.DESPESA)
+					.getSingleResult());
+		return optional.orElse(BigDecimal.ZERO);
 	}
 	
+	public BigDecimal totalcontasPagas() {
+		Optional<BigDecimal> optional = Optional.ofNullable(
+				manager.createQuery("select sum(valor) from Lancamento where dataPagamento IS NOT NULL and tipo = :tipo", BigDecimal.class)
+					.setParameter("tipo", TipoLancamento.DESPESA)
+					.getSingleResult());
+		return optional.orElse(BigDecimal.ZERO);
+	}
+	
+	public BigDecimal totalcontasRecebidas() {
+		Optional<BigDecimal> optional = Optional.ofNullable(
+				manager.createQuery("select sum(valor) from Lancamento where dataPagamento IS NOT NULL and tipo = :tipo", BigDecimal.class)
+					.setParameter("tipo", TipoLancamento.RECEITA)
+					.getSingleResult());
+		return optional.orElse(BigDecimal.ZERO);
+	}
+	
+	@Override
+	public BigDecimal saldo() {
+		Optional<BigDecimal> optional = Optional.ofNullable(
+				totalcontasRecebidas().subtract(totalcontasPagas()));
+		return optional.orElse(BigDecimal.ZERO);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(readOnly = true)
+	public Page<Lancamento> lancamentosFuturos(LancamentoFilter filtro, Pageable pageable) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Lancamento.class);
+		criteria.addOrder(Order.desc("dataPagamento"));
+		criteria.add(Restrictions.isNull("dataPagamento"));
+		paginacaoUtil.preparar(criteria, pageable);
+		adicionarFiltro(filtro, criteria);
+		return new PageImpl<>(criteria.list(), pageable, total(filtro));
+	}
 }

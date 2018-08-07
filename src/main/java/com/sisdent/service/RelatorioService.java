@@ -63,14 +63,19 @@ public class RelatorioService {
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("format", "pdf");
 		
-		InputStream inputStream = this.getClass()
-				.getResourceAsStream(caminho);
-		
-		JRDataSource datasource = new JRBeanCollectionDataSource(list, true);
 		
 		try {
-			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros, datasource);
-			return JasperExportManager.exportReportToPdf(jasperPrint);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			JasperReport jasperReport;
+			JasperPrint jasperPrint;
+			jasperReport = JasperCompileManager.compileReport(getClass().getResourceAsStream(caminho));
+			JRDataSource datasource = new JRBeanCollectionDataSource(list, true);
+			
+			jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, datasource);
+
+			JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+			
+			return baos.toByteArray();
 		} finally {
 			
 		}

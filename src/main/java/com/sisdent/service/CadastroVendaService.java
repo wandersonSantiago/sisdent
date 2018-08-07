@@ -4,18 +4,21 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.Null;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sisdent.model.Categoria;
+import com.sisdent.model.Lancamento;
 import com.sisdent.model.Parcela;
 import com.sisdent.model.StatusPagamento;
 import com.sisdent.model.StatusVenda;
+import com.sisdent.model.TipoLancamento;
 import com.sisdent.model.Venda;
+import com.sisdent.repository.Categorias;
+import com.sisdent.repository.LancamentoRepository;
 import com.sisdent.repository.ParcelaRepository;
 import com.sisdent.repository.Vendas;
 import com.sisdent.service.event.venda.VendaEvent;
@@ -29,6 +32,12 @@ public class CadastroVendaService {
 	
 	@Autowired
 	private ParcelaRepository parcelaRepository;
+	
+	@Autowired
+	private LancamentoRepository lancamentoRepository;
+	
+	@Autowired
+	private CategoriaService categoriaService;
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
@@ -54,19 +63,40 @@ public class CadastroVendaService {
 			
 			venda.setStatusPagamento(StatusPagamento.PARCELADO);
 			addParcela(venda);
-		}		
+		}	
+		if(venda.getQtdParcelas() == 0) {
+			
+			venda.setStatusPagamento(StatusPagamento.PENDENTE);
+			venda.setQtdParcelas(1);
+			addParcela(venda);
+		}	
+		if (!venda.isNova()) {
+			venda.getParcelas().forEach(p ->{			
+				p.setLancamento(salvarLancamento(p));
+			});
+		}
 		return vendas.saveAndFlush(venda);
 	}
 
 	@Transactional
-	public void emitir(Venda venda) {
-		if (venda.getStatus().ordinal() != StatusVenda.ORCAMENTO.ordinal()) {
-			throw new NomeCidadeJaCadastradaException("Não foi possivel realizar esta operação este orçamento ja foi Emitido ou cancelado");
-		}
+	public void emitir(Venda venda) {		
 		venda.setStatus(StatusVenda.EMITIDA);
-		salvar(venda);
-		
+		salvar(venda);		
 		publisher.publishEvent(new VendaEvent(venda));
+	}
+
+	@Transactional
+	private Lancamento salvarLancamento(Parcela parcela) {
+		Lancamento lancamento = new Lancamento();
+		
+		lancamento.setCategoria(categoriaService.criaCategoriaParcela("Parcelado"));
+		lancamento.setDataVencimento(parcela.getDataVencimento());
+		lancamento.setValor(parcela.getValor());
+		lancamento.setTipo(TipoLancamento.RECEITA);
+		lancamento.setObservacao("Parcela de número: "+ parcela.getNumero() +  " de um total de " + parcela.getOrcamento().getQtdParcelas());
+		lancamento.setDescricao("Paciente: " +  parcela.getOrcamento().getCliente().getNome());
+		
+		return lancamentoRepository.saveAndFlush(lancamento);
 	}
 
 	@PreAuthorize("#venda.usuario == principal.usuario or hasRole('CANCELAR_VENDA')")
@@ -100,6 +130,10 @@ public class CadastroVendaService {
 				venda.addParcela(parcela);
 			}
 		}
+	}
+
+	public Venda findOne(Long codigo) {
+		return vendas.findById(codigo).get();
 	}
 
 }

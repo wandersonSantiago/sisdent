@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -28,6 +31,10 @@ public class Categoria implements Serializable {
 	
 	@OneToMany(mappedBy = "categoria")
 	private List<Produto> produtos;
+	
+	@NotNull(message="Tipo não pode ser nulo")
+	@Enumerated(EnumType.STRING)
+	private TipoCategoria tipo;
 
 	public Long getCodigo() {
 		return codigo;
@@ -57,6 +64,15 @@ public class Categoria implements Serializable {
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
+	}
+
+	
+	public TipoCategoria getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoCategoria tipo) {
+		this.tipo = tipo;
 	}
 
 	@Override

@@ -83,7 +83,7 @@ public class AgendaController {
 	public ResponseEntity<byte[]> enviarEmail(@Valid Agenda agenda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema)throws Exception  {
 		List<Agenda> agendas = new ArrayList<>();
 		agendas.add(agendaService.salvar(agenda, usuarioSistema));
-		byte[] relatorio = relatorioService.gerarRelatorioGenerico(agendas, "/relatorios/agendamento.jasper");
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(agendas, "/relatorios/agendamento.jrxml");
 		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
@@ -97,7 +97,7 @@ public class AgendaController {
 			agenda.setCodigo(codigo);
 		}
 		agendas.add(agendaService.salvar(agenda, usuarioSistema));
-		byte[] relatorio = relatorioService.gerarRelatorioGenerico(agendas, "/relatorios/agendamento.jasper");
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(agendas, "/relatorios/agendamento.jrxml");
 		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)

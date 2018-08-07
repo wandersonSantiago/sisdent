@@ -5,7 +5,6 @@ package com.sisdent.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 
@@ -40,6 +40,9 @@ public class Parcela implements Serializable {
     @Column(name = "data_vencimento")
 	private LocalDate dataVencimento;
     
+    @Column(name = "data_pagamento")
+	private LocalDate dataPagamento;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "pago", nullable = false)
@@ -48,6 +51,9 @@ public class Parcela implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL,optional = false)
     private Venda orcamento;
 
+    @OneToOne
+    private Lancamento lancamento;
+    
     public Parcela() {
     }
 
@@ -100,6 +106,24 @@ public class Parcela implements Serializable {
 		this.dataVencimento = localDate;
 	}
 
+	
+	public Lancamento getLancamento() {
+		return lancamento;
+	}
+
+	public void setLancamento(Lancamento lancamento) {
+		this.lancamento = lancamento;
+	}
+
+	
+	public LocalDate getDataPagamento() {
+		return dataPagamento;
+	}
+
+	public void setDataPagamento(LocalDate dataPagamento) {
+		this.dataPagamento = dataPagamento;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -124,5 +148,9 @@ public class Parcela implements Serializable {
 			return false;
 		return true;
 	}
+
+	
+
+	
 
 }

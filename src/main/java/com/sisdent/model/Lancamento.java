@@ -27,26 +27,29 @@ public class Lancamento {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
 	
-	@NotNull
+	@NotNull(message="descrição não pode ser nulo")
 	private String descricao;
 
-	@NotNull
+	@NotNull(message="data de vencimento não pode ser nulo")
 	@Column(name = "data_vencimento")
 	private LocalDate dataVencimento;
 
 	@Column(name = "data_pagamento")
 	private LocalDate dataPagamento;
+	
+	@Column(name = "data_cadastro")
+	private LocalDate dataCadastro =  LocalDate.now();
 
-	@NotNull
+	@NotNull(message="valor não pode ser nulo")
 	private BigDecimal valor;
 
 	private String observacao;
 
-	@NotNull
+	@NotNull(message="Tipo não pode ser nulo")
 	@Enumerated(EnumType.STRING)
 	private TipoLancamento tipo;
 
-	@NotNull
+	@NotNull(message="Categoria não pode ser nulo")
 	@ManyToOne
 	@JoinColumn(name = "codigo_categoria")
 	private Categoria categoria;
@@ -58,6 +61,9 @@ public class Lancamento {
 		return TipoLancamento.RECEITA.equals(tipo);
 	}
 	
+	public boolean isNovo() {
+		return codigo == null;
+	}
 	public Long getCodigo() {
 		return codigo;
 	}

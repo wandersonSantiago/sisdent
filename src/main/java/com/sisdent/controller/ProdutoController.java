@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sisdent.controller.page.PageWrapper;
 import com.sisdent.model.Produto;
+import com.sisdent.model.TipoCategoria;
 import com.sisdent.repository.Categorias;
 import com.sisdent.repository.Produtos;
 import com.sisdent.repository.filter.ProdutoFilter;
@@ -46,7 +47,7 @@ public class ProdutoController {
 	@RequestMapping("/novo")
 	public ModelAndView nova(Produto produto) {
 		ModelAndView mv = new ModelAndView("produto/produto.form");
-		mv.addObject("categorias", categorias.findAll());
+		mv.addObject("categorias", categorias.findByTipo(TipoCategoria.PRODUTO));
 		return mv;
 	}
 	
@@ -65,7 +66,7 @@ public class ProdutoController {
 	public ModelAndView pesquisar(ProdutoFilter produtoFilter, BindingResult result
 			, @PageableDefault(size = 24) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("produto/produto.list");
-		mv.addObject("categorias", categorias.findAll());
+		mv.addObject("categorias", categorias.findByTipo(TipoCategoria.PRODUTO));
 		
 		PageWrapper<Produto> paginaWrapper = new PageWrapper<>(produtos.filtrar(produtoFilter, pageable)
 				, httpServletRequest);

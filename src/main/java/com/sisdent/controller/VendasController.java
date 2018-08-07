@@ -46,6 +46,7 @@ import com.sisdent.service.CadastroVendaService;
 import com.sisdent.service.ClienteService;
 import com.sisdent.service.RelatorioService;
 import com.sisdent.service.RelatorioUtil;
+import com.sisdent.service.exception.NomeCidadeJaCadastradaException;
 import com.sisdent.session.TabelasItensSession;
 
 @Controller
@@ -111,8 +112,13 @@ public class VendasController {
 			return nova(venda);
 		}
 		
+		Venda vendaRecuperada = cadastroVendaService.findOne(venda.getCodigo());
 		venda.setUsuario(usuarioSistema.getUsuario());
 		
+		if (vendaRecuperada.getStatus().ordinal() != StatusVenda.ORCAMENTO.ordinal()) {
+			attributes.addFlashAttribute("mensagem", "Não foi possivel realizar esta operação este orçamento ja foi Emitido ou cancelado");
+			return new ModelAndView("redirect:/vendas/nova");
+		}
 		cadastroVendaService.emitir(venda);
 		attributes.addFlashAttribute("mensagem", "Orçamento emitido com sucesso");
 		return new ModelAndView("redirect:/vendas/nova");
@@ -130,7 +136,7 @@ public class VendasController {
 		
 		List<Venda> vendas = new ArrayList<>();
 		vendas.add(venda);
-		byte[] relatorio = relatorioService.gerarRelatorioGenerico(vendas, "/relatorios/orcamento.jasper");
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(vendas, "/relatorios/orcamento.jrxml");
 		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
@@ -141,7 +147,7 @@ public class VendasController {
 	public ResponseEntity<byte[]> enviarEmail(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema)throws Exception  {
 		List<Venda> vendas = new ArrayList<>();
 		vendas.add(venda);
-		byte[] relatorio = relatorioService.gerarRelatorioGenerico(vendas, "/relatorios/orcamento.jasper");
+		byte[] relatorio = relatorioService.gerarRelatorioGenerico(vendas, "/relatorios/orcamento.jrxml");
 		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)

@@ -14,17 +14,20 @@
 .blue{
 	color: blue;
 	font-size: 14px;
+	font-weight: bold;
 }
 
 .green{
 	color: green;
 	font-size: 14px;
+	font-weight: bold;
 }
 
 .red{
 	color: red;
 	border-radius: 4px;
 	font-size: 14px;
+	font-weight: bold;
 }
 /*
 ######################

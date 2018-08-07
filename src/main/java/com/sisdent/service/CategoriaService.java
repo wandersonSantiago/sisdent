@@ -33,7 +33,6 @@ public class CategoriaService {
 	public void excluir(Categoria categoria) {
 	try {
 		categorias.delete(categoria);
-		categorias.flush();
 	} catch (PersistenceException e) {
 		throw new ImpossivelExcluirEntidadeException("Impossível apagar categoria. Já foi usada no cadastro de algum produto.");
 	}
@@ -41,6 +40,17 @@ public class CategoriaService {
 
 	public Categoria findOne(Long codigo) {
 		return categorias.findById(codigo).get();
+	}
+
+	@Transactional
+	public Categoria criaCategoriaParcela(String nome) {
+		Optional<Categoria> optional = categorias.findByNomeIgnoreCase(nome);
+		if (optional.isPresent()) {
+			return  optional.get();
+		}
+		Categoria categoria = new Categoria();
+		categoria.setNome(nome);
+		return categorias.save(categoria);
 	}
 	
 }

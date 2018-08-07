@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_vendas_emitidas" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c38d4155-5ef9-40fc-ba01-896003ab3456">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -202,7 +202,7 @@ Telefone : 3308-8744/ 98717-1574]]></text>
 				<reportElement x="444" y="142" width="109" height="18" uuid="d71de2bd-a79d-4fb7-b548-e10eff55cda5"/>
 				<textFieldExpression><![CDATA[$F{valorDesconto}]]></textFieldExpression>
 			</textField>
-			<textField pattern="MMMM d, yyyy">
+			<textField pattern="dd/MM/yyyy">
 				<reportElement x="444" y="101" width="108" height="18" uuid="0be317a2-db6a-4601-a70e-3aaca49dbe7a"/>
 				<textFieldExpression><![CDATA[$F{dataCriacao}]]></textFieldExpression>
 			</textField>
@@ -348,7 +348,7 @@ Telefone : 3308-8744/ 98717-1574]]></text>
 			</textField>
 			<textField pattern="MMMMM dd, yyyy">
 				<reportElement x="1" y="11" width="179" height="15" uuid="e6fd220e-a59f-4237-94f0-677ba9e01587"/>
-				<textFieldExpression><![CDATA[ new SimpleDateFormat("dd/MM/yyyy HH : mm").format(new java.util.Date())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy HH : mm").format(new java.util.Date())]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

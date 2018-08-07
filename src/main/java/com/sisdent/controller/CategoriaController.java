@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sisdent.controller.page.PageWrapper;
 import com.sisdent.model.Categoria;
 import com.sisdent.model.Produto;
+import com.sisdent.model.TipoCategoria;
 import com.sisdent.repository.Categorias;
 import com.sisdent.repository.filter.CategoriaFilter;
 import com.sisdent.service.CategoriaService;
@@ -42,6 +43,7 @@ public class CategoriaController {
 	@RequestMapping("/novo")
 	public ModelAndView novo(Categoria categoria) {
 		ModelAndView mv = new ModelAndView("categoria/categoria.form");
+		mv.addObject("tipos", TipoCategoria.values());
 		return mv;
 	}
 	

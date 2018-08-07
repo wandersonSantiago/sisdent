@@ -8,6 +8,8 @@
 
 <head>
 	<title>Cadastro de Paciente</title>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <section layout:fragment="conteudo">
 
@@ -30,45 +32,73 @@
 	</div>
 
 	<div class="container-fluid">
-  <form autocomplete="off">
+ <form method="POST" th:object="${lancamento}" class="form-vertical  js-form-loading" 
+				th:action="${lancamento.novo} ? @{/lancamentos/novo} : @{/lancamentos/editar/{codigo}(codigo=${lancamento.codigo})}">
+			<brewer:message/>	
     <div class="row">
       <div class="col-md-6">
-       <label>Tipo</label>
-        <select class="form-control">Tipo</select>
+       <label for="tipo" class="control-label">Tipo</label>
+		<select id="tipo" class="form-control" th:field="*{tipo}">
+                  <option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>	               
+              </select>
       </div>
 	</div>
+	<script>
+		$(document).ready(function(){
+	    		 $("#despesa").hide();	
+	    		 $("#receita").show();
+		    $("#tipo").click(function(){		    	
+		    	if($("#tipo").val() == 'RECEITA'){
+		    		 $("#despesa").hide();	
+		    		 $("#receita").show();
+		    		 }else{
+		    			 $("#despesa").show();
+		    			 $("#receita").hide();
+		    		 }
+		    });		   
+		});
+	</script>
 	<div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6 data">
         <label>Vencimento</label>
-        <input type="date" class="form-control">
+        <div class="input-group">
+    	<div class="input-group-addon"><i class="fa  fa-calendar"></i></div> 
+			<input type="text"  class="form-control    js-date" id="data" th:field="*{dataVencimento}" />
+		</div>
       </div>
 
-      <div class="col-md-6">
-        <label>Data Pagamento ou recebimento</label>
-        <input type="date" class="form-control">
+      <div class="col-md-6 data" >
+        <label id="despesa">Data Pagamento</label> <label id="receita">Data Recebimento</label> 
+        <div class="input-group">
+    	<div class="input-group-addon"><i class="fa  fa-calendar"></i></div> 
+			<input type="text"  class="form-control    js-date" id="data" th:field="*{dataPagamento}" />
+		</div>
       </div>
 	</div>
 	<div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 bw-required" >
         <label>Descrição</label>
-        <input  type="text" name="descricao" class="form-control">
+        <input  type="text" name="descricao" class="form-control" th:field="*{descricao}" required="required">
       </div>
 	</div>
 	<div class="row">
       <div class="col-md-6">
         <label>Valor</label>
-        <input  type="text" name="valor" placeholder="0,00"   class="form-control" >
+        <input  type="text" name="valor" placeholder="0,00"   class="form-control js-decimal bw-required"  th:field="*{valor}" required="required">
       </div>
 
-      <div class="col-md-6">
-        <label>Categoria</label>
-       <select class="form-control">Categoria</select>
+      <div class="col-md-6 bw-required">
+       <label for="categoria" class="control-label">Categoria</label>
+		<select id="categoria" class="form-control" th:field="*{categoria}" required="required">
+                  <option value="">Todos as categorias</option>
+                  <option th:each="categoria : ${categorias}" th:value="${categoria.codigo}" th:text="${categoria.nome}"></option>
+              </select>
       </div>
 	</div>
 	<div class="row">
       <div class="col-md-12">
         <label>Observação</label>
-        <textarea  rows="3" name="observacao" class="form-control"></textarea>
+        <textarea  rows="3" name="observacao" class="form-control" th:field="*{observacao}"></textarea>
       </div>
 	</div><br>
 	<div class="row">
@@ -78,9 +108,10 @@
     </div>
   </form>
 </div>
-</section>
 
-<th:block layout:fragment="javascript-extra">
+</section>
+<th:block layout:fragment="javascript-extra">	
+	
 	<script th:src="@{/javascripts/cliente.mascara-cpf-cnpj.js}"></script>
 	<script th:src="@{/javascripts/cliente.combo-estado-cidade.js}"></script>
 </th:block>

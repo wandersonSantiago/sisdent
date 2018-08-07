@@ -25,6 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sisdent.controller.page.PageWrapper;
 import com.sisdent.model.Lancamento;
+import com.sisdent.model.TipoCategoria;
+import com.sisdent.model.TipoLancamento;
 import com.sisdent.repository.Categorias;
 import com.sisdent.repository.LancamentoRepository;
 import com.sisdent.repository.filter.LancamentoFilter;
@@ -47,7 +49,8 @@ public class LancamentoController {
 	@RequestMapping("/novo")
 	public ModelAndView nova(Lancamento lancamento) {
 		ModelAndView mv = new ModelAndView("financas/lancamento.form");
-		mv.addObject("categorias", categorias.findAll());
+		mv.addObject("categorias", categorias.findByTipo(TipoCategoria.FINANCEIRO));
+		mv.addObject("tipos", TipoLancamento.values());
 		return mv;
 	}
 	
@@ -62,15 +65,31 @@ public class LancamentoController {
 		return new ModelAndView("redirect:/lancamentos/novo");
 	}
 	
+	@RequestMapping(value = { "/editar/{codigo}" }, method = RequestMethod.POST)
+	public ModelAndView editar(@PathVariable("codigo") Long codigo,  Lancamento lancamento, BindingResult result, Model model, RedirectAttributes attributes) {
+		if (result.hasErrors()) {
+			return nova(lancamento);
+		}		
+		lancamentoService.atualizar(codigo, lancamento);
+		attributes.addFlashAttribute("mensagem", "Lancamento editado com sucesso!");
+		return new ModelAndView("redirect:/lancamentos");
+	}
+	
 	@GetMapping
 	public ModelAndView pesquisar(LancamentoFilter lancamentoFilter, BindingResult result
 			, @PageableDefault(size = 24) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("financas/lancamento.list");
-		mv.addObject("categorias", categorias.findAll());
-		
+		mv.addObject("categorias", categorias.findByTipo(TipoCategoria.FINANCEIRO));
+		mv.addObject("tipos", TipoLancamento.values());
+		mv.addObject("totalAPagar", lancamentos.totalcontasAPagar());
+		mv.addObject("totalAReceber", lancamentos.totalContasAReceber());
+		mv.addObject("totalSaldo", lancamentos.saldo());
 		PageWrapper<Lancamento> paginaWrapper = new PageWrapper<>(lancamentos.filtrar(lancamentoFilter, pageable)
 				, httpServletRequest);
+		PageWrapper<Lancamento> lancamentoFuturoWrapper = new PageWrapper<>(lancamentos.lancamentosFuturos(lancamentoFilter, pageable)
+				, httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
+		mv.addObject("paginaLancamentoFuturo", lancamentoFuturoWrapper);
 		return mv;
 	}
 	

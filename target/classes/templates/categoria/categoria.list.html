@@ -48,6 +48,7 @@
 						<th>
 							<brewer:order page="${pagina}" field="nome" text="Nome"/>
 						</th>
+						<th>Tipo</th>
 						<th class="table-col-acoes"></th>
 					</tr>
 				</thead>
@@ -56,16 +57,17 @@
 					<tr th:each="categoria : ${pagina.conteudo}">
 						<td class="text-center" th:text="${categoria.codigo}">1</td>
 						<td th:text="${categoria.nome}">Pale Lager</td>
+						<td th:text="${categoria.tipo.descricao}">Pale Lager</td>
 						<td class="text-center">
 							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"
 							 th:href="@{/categorias/{codigo}(codigo=${categoria.codigo})}"> 
 								<i class="glyphicon glyphicon-pencil"></i>
 							</a>
-							<a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir" href="#" 
+							<!-- <a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir" href="#" 
 							        data:url="@{/categorias/{codigo}(codigo=${categoria.codigo})}"
 									data:objeto="${categoria.nome}">
 								<i class="glyphicon glyphicon-remove"></i>
-							</a>
+							</a> -->
 						</td>
 					</tr>
 					<tr th:if="${pagina.vazia}">

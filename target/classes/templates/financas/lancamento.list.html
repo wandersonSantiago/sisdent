@@ -39,7 +39,7 @@
 						<div class="aw-box__icon">
 							<i class="fa  fa-usd  fa-3x"></i>
 						</div>
-						<div class="aw-box__value">R$<span class="js-valor-total-box" >0,00</span></div>
+						<div class="aw-box__value"><h2>R$[[${{totalSaldo}}]]</h2></div>
 						<div class="aw-box__title">Total em Conta</div>
 					</div>
 				</div>
@@ -49,8 +49,8 @@
 						<div class="aw-box__icon">
 							<i class="fa  fa-usd  fa-3x"></i>
 						</div>
-							<div class="aw-box__value">R$<span class="js-valor-total-box" >0,00</span></div>
-						<div class="aw-box__title">Contas a receber</div>
+						<div class="aw-box__value blue"><h2>R$[[${{totalAReceber}}]]</h2></div>
+						<div class="aw-box__title">Valores a receber</div>
 					</div>
 				</div>
 				
@@ -59,7 +59,7 @@
 						<div class="aw-box__icon">
 							<i class="fa  fa-usd  fa-3x"></i>
 						</div>
-							<div class="aw-box__value">R$<span class="js-valor-total-box" >0,00</span></div>
+							<div class="aw-box__value red"><h2>R$[[${{totalAPagar}}]]</h2></div>
 							<span class="aw-box__title" >Contas a Pagar</span>
 						</div>
 					</div>
@@ -71,38 +71,40 @@
 				</div>
 				
 				<div class="form-group  col-sm-6">
-					<label for="status" class="control-label">Tipo</label>
-					<select id="status" class="form-control" th:field="*{tipo}">
-	                    <option value="">Todos os status</option>
+					<label for="tipo" class="control-label">Tipo</label>
+					<select id="tipo" class="form-control" th:field="*{tipo}">
+	                    <option value="">Todos os status</option>  
+	                    <option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>	               
 	                </select>
 				</div>
 			</div>
 			<div class="row">		
 			<div class="form-group  col-sm-6">
-					<label for="status" class="control-label">Categoria</label>
-					<select id="status" class="form-control" th:field="*{tipo}">
+					<label for="categoria" class="control-label">Categoria</label>
+					<select id="categoria" class="form-control" th:field="*{categoria}">
 	                    <option value="">Todos as categorias</option>
+	                    <option th:each="categoria : ${categorias}" th:value="${categoria.codigo}" th:text="${categoria.nome}"></option>
 	                </select>
 				</div>		
 			<div class="form-group  col-sm-6">
 					<label for="valorMinimo">Valor total</label>
 					<div class="form-inline">
-						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorMinimo" />
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorMinimo" th:field="*{valorMinimo}"/>
 						<label for="valorMaximo" class="aw-form-label-between">até</label>
-						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorMaximo" />
+						<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorMaximo" th:field="*{valorMaximo}"/>
 					</div>
 				</div>
 		</div>
 			
 			<div class="row">
 				<div class="form-group  col-sm-6">
-					<label for="dataCriacaoInicial">Data de cadastro</label>
+					<label for="dataCriacaoInicial">Data de Pagamento/Recebimento</label>
 					<div class="form-inline">
 						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
-							 autocomplete="off"/>
+							 autocomplete="off" th:field="*{dataPagamentoDe}"/>
 						<label for="dataCriacaoFinal" class="aw-form-label-between">até</label>
 						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
-							 autocomplete="off"/>
+							 autocomplete="off" th:field="*{dataPagamentoAte}"/>
 					</div>
 				</div>
 				
@@ -110,10 +112,10 @@
 					<label for="dataCriacaoInicial">Data de Vencimento</label>
 					<div class="form-inline">
 						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
-							 autocomplete="off"/>
+							 autocomplete="off" th:field="*{dataVencimentoDe}"/>
 						<label for="dataCriacaoFinal" class="aw-form-label-between">até</label>
 						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataCriacaoInicial" 
-							 autocomplete="off"/>
+							 autocomplete="off" th:field="*{dataVencimentoAte}"/>
 					</div>
 				</div>
 				
@@ -121,38 +123,112 @@
 		
 			<button type="submit" class="btn  btn-primary">Pesquisar</button>
 		</form>
-		
+		<br>
+		<div class="row">
+				<div class="form-group  col-lg-12">
+					<ul class="nav nav-tabs  js-abas-venda">
+					  <li role="presentation" class="active"><a href="#recentes">Lançamentos Recentes</a></li>
+					  <li role="presentation"><a href="#futuros">Lançamentos Futuro</a></li>
+					</ul>
+				</div>
+			</div>
+			
+		<div class="tab-content">			
+			<!-- Lançamentos Futuros -->
+		<div class="tab-pane" id="futuros">
 		<div class="table-responsive  bw-tabela-simples">
 			<table class="table  table-hover">
 	            <thead>
 	            	<tr>
-	                	<th>Código</th>
-	                	<th>
-	                		<brewer:order page="${pagina}" field="c.nome" text="Descrição"/>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${paginaLancamentoFuturo}" field="codigo" text="Codigo"/> --> Codigo
 	                	</th>
-	                	<th>Tipo</th>
-	                	<th>Categoria</th>
-	                	<th>Data de cadastro</th>
-	                	<th>Vencimento</th>
-	                	<th>Valor</th>
-	                	
-	                	
-	                 	<th class="table-col-acoes"></th>
+	                	<th class="col-md-3">
+	                		<!-- <brewer:order page="${paginaLancamentoFuturo}" field="descricao" text="Descrição"/> -->Descrição
+	                	</th >
+	                	<th class="col-md-4">Observação</th>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${paginaLancamentoFuturo}" field="tipo" text="Tipo"/> -->Tipo
+	                	</th>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${paginaLancamentoFuturo}" field="dataVencimento" text="Data Vencimento"/> --> Vencimento
+	                	</th>
+	                
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${paginaLancamentoFuturo}" field="valor" text="Valor"/> -->Valor
+	                	</th>             	
+	                 	<th class="table-col-acoes col-md-1">Ações</th>
+					</tr>
+				</thead>
+				
+	            <tbody>
+					<tr th:each="lancamento : ${paginaLancamentoFuturo.conteudo}">
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'">
+							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"  th:text="${lancamento.codigo}"
+		   							th:href="@{/lancamentos/{codigo}(codigo=${lancamento.codigo})}">
+		   					</a>
+						</td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${lancamento.descricao}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${lancamento.observacao}"></td>						
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${lancamento.tipo.descricao}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${{lancamento.dataVencimento}}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="|R$ ${{lancamento.valor}}|"></td>
+	                 	<td class="text-center">
+		   					<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
+		   							th:href="@{/lancamentos/{codigo}(codigo=${lancamento.codigo})}">
+		   						<i class="glyphicon glyphicon-pencil"></i>
+		   					</a>
+	                 	</td>
+	                </tr>
+	                
+	                <tr th:if="${paginaLancamentoFuturo.vazia}">
+	                	<td colspan="7">Nenhum lancamento encontrado</td>
+	                </tr>
+	             </tbody>
+	         </table>
+		</div>
+		</div>
+		<div class="tab-pane active" id="recentes">
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+	            <thead>
+	            	<tr>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${pagina}" field="codigo" text="Codigo"/> -->Codigo
+	                	</th>
+	                	<th class="col-md-3">
+	                		<!-- <brewer:order page="${pagina}" field="descricao" text="Descrição"/> -->Descrição
+	                	</th>
+	                	<th class="col-md-3">Observação</th>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${pagina}" field="tipo" text="Tipo"/> -->Tipo
+	                	</th>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${pagina}" field="dataVencimento" text="Data Vencimento"/> -->Vencimento
+	                	</th>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${pagina}" field="dataPagamento" text="Data Pagamento/Recebimento"/> -->Pagamento/Recebimento
+	                	</th>
+	                	<th class="col-md-1">
+	                		<!-- <brewer:order page="${pagina}" field="valor" text="Valor"/> -->Valor
+	                	</th>             	
+	                 	<th class="table-col-acoes col-md-1">Ações</th>
 					</tr>
 				</thead>
 				
 	            <tbody>
 					<tr th:each="lancamento : ${pagina.conteudo}">
-						<td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'">
 							<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"  th:text="${lancamento.codigo}"
 		   							th:href="@{/lancamentos/{codigo}(codigo=${lancamento.codigo})}">
 		   					</a>
 						</td>
-						<td th:text="${lancamento.cliente.nome}"></td>
-						<td th:text="${{lancamento.dataCriacao}}"></td>
-						<td th:text="|R$ ${{lancamento.valorTotal}}|"></td>
-						<td th:text="${lancamento.usuario.nome}"></td>
-						<td th:text="${lancamento.status.descricao}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${lancamento.descricao}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${lancamento.observacao}"></td>						
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${lancamento.tipo.descricao}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${{lancamento.dataVencimento}}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="${{lancamento.dataPagamento}}"></td>
+						<td th:class="${lancamento.tipo.descricao} == 'Despesa'? 'red' : 'blue'" th:text="|R$ ${{lancamento.valor}}|"></td>
 	                 	<td class="text-center">
 		   					<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar" 
 		   							th:href="@{/lancamentos/{codigo}(codigo=${lancamento.codigo})}">
@@ -162,15 +238,25 @@
 	                </tr>
 	                
 	                <tr th:if="${pagina.vazia}">
-	                	<td colspan="7">Nenhum lancamento encontrada</td>
+	                	<td colspan="7">Nenhum lancamento encontrado</td>
 	                </tr>
 	             </tbody>
 	         </table>
 		</div>
-		
+		</div>
+		</div>
 		<brewer:pagination page="${pagina}"/>
 	</div>
 </section>
-
+<th:block layout:fragment="javascript-extra">
+	<script>
+	$(function() {
+		$('.js-abas-venda a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+	});
+	</script>
+</th:block>
 </body>
 </html>
